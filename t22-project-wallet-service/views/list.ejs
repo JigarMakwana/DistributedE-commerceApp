@@ -30,15 +30,15 @@
             </tr>
         </thead>
         <tbody>
-            <% parts.forEach(function(p){ %>
+            <% wallet.forEach(function(p){ %>
             <tr>
-                <td><%= p.partId %></td>
+                <td><%= p.userId %></td>
                 <td><%= null %></td>
                 <td><%= null %></td>
-                <td><%= p.qoh %></td>
+                <td><%= p.amount %></td>
                 <td>
-                    <form class="d-inline" action="<%= process.env.awsLambdaPath %>/parts/editProcess/" method="post">
-                        <input type="hidden" name="partId" value="<%= p.partId %>">
+                    <form class="d-inline" action="<%= process.env.awsLambdaPath %>/wallet/addMoney/" method="post">
+                        <input type="hidden" name="userId" value="<%= p.userId %>">
                         <input type="submit" value="Edit" class="btn btn-primary">
                     </form>
                     <!-- <form class="d-inline" action="/parts/delete/" method="post">
