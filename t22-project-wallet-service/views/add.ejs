@@ -13,12 +13,12 @@
 <body>
     <%- include("header"); -%>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="<%= process.env.awsLambdaPath %>/parts">wallet</a></li>
+        <li class="breadcrumb-item"><a href="<%= process.env.awsLambdaPath %>/wallet">wallet</a></li>
         <li class="breadcrumb-item active">add</li>
     </ol>
     <div class="registration-form">
         <h1 class="display-4">Register a new user wallet</h1>
-        <form method="post" action="<%= process.env.awsLambdaPath %>/parts/add" ngNativeValidate>
+        <form method="post" action="<%= process.env.awsLambdaPath %>/wallet/add" ngNativeValidate>
             <div class="form-group">
                 <label for="title">User ID</label>
                 <input type="number" name="userId" min="1" class="form-control" required>

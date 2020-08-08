@@ -10,16 +10,16 @@
 <body>
     <%- include("header"); -%>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="<%= process.env.awsLambdaPath %>/parts">wallet</a></li>
+        <li class="breadcrumb-item"><a href="<%= process.env.awsLambdaPath %>/wallet/">wallet</a></li>
         <li class="breadcrumb-item active">update</li>
     </ol>
     <div class="registration-form" style="text-align:center">
-      <h1 class="display-4">Update Quantity for Part ID: <%= partId %></h1>
-      <form method="post" action="<%= process.env.awsLambdaPath %>/parts/edit" ngNativeValidate>
-        <input id="partId" name="partId" type="hidden" value=<%= partId %>>
+      <h1 class="display-4">Add amount to wallet for userId: <%= userId %></h1>
+      <form method="post" action="<%= process.env.awsLambdaPath %>/wallet/edit" ngNativeValidate>
+        <input id="userId" name="userId" type="hidden" value=<%= userId %>>
 
         <div class="form-group center" style="text-align:center">
-          <input id="quantity" name="quantity" type="number"  min="1" class="form-control" placeholder="Enter Updated Quantity">
+          <input id="amount" name="amount" type="number"  min="1" class="form-control" placeholder="Enter updated balance" required>
         </div>
         <input name="submit" class="btn btn-primary" type="submit"/>
       </form>
