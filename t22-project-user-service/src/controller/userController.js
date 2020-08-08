@@ -1,6 +1,7 @@
 const joi = require('joi')
 const UserService = require('../service/userService.js')
 const jwt = require('jsonwebtoken')
+const Cookies = require('js-cookie')
 
 // Schema for user login
 const userLoginSchema = joi.object().keys({
@@ -11,7 +12,11 @@ const userLoginSchema = joi.object().keys({
     // password is required
     password: joi.string().required(),
 
+    // Security Question is required
+    securityQuestion: joi.string().required(),
 
+    // Security Answer is required
+    securityAnswer: joi.string().required(),
 });
 
 // Schema for user login
@@ -64,8 +69,6 @@ class UserController {
                 securityA:  request.body.securityAnswer
             }
 
-            console.log(`Calling the service method for fetching of the user: ${userObj.email}`)
-
             let userService = new UserService()
 
             // Fetching the user
@@ -75,25 +78,27 @@ class UserController {
                 throw Error(`Error in fetching the user: ${request.body.email}`)
             }
 
-            // Compare password
-
+            console.log(`Performing first factor authentication for: ${userObj.email}`)
+            // Validate password
             let isPasswordValid = await userService.validatePassword(userObj, userDBObj)
-            if (!isPasswordValid) {
-                throw Error(`Cannot authenticate the username and password for: ${request.body.email}`)
-            }
+            if (!isPasswordValid)
+                throw Error(`Cannot authenticate the username and password for: ${userObj.email}`)
 
+            console.log(`Performing second factor authentication for: ${userObj.email}`)
+            // Validate security question
             let isSecurityQValid = await userService.validateSecurityQ(userObj, userDBObj)
             if (!isSecurityQValid) {
-                throw Error(`Invalid Security Question for: ${request.body.email}`)
+                throw Error(`Invalid Security Question for: ${userObj.email}`)
             }
-
-            let isSecurityAValid = await userService.validateSecurityQA(userObj, userDBObj)
+            // Validate security answer
+            let isSecurityAValid = await userService.validateSecurityA(userObj, userDBObj)
             if (!isSecurityAValid) {
-                throw Error(`Invalid Security Answer for: ${request.body.email}`)
+                throw Error(`Invalid Security Answer for: ${userObj.email}`)
             }
 
             // Step - 3
             // generate and manage the stored session
+            Cookies.set("email", userObj.email);
             let userSession = await userService.generateJWTToken(userDBObj)
 
             if (userSession) {
@@ -196,28 +201,28 @@ class UserController {
     }
 
     async isUserLoggedIn(request, response) {
-            try {
+        try {
 
-                let userService = new UserService()
-                // generate and manage the stored session
-                let userSession = await userService.isUserLoggedIn(request, response)
+            let userService = new UserService()
+            // generate and manage the stored session
+            let userSession = await userService.isUserLoggedIn(request, response)
 
-                if (userSession) {
-                    return userSession
-                }
-                else {
-                    let res = {
-                        'message': 'You are not authorized to view this page. Please login to proceed.'
-                    }
-                    response.render('error', { error: res })
-                }
-
-
-            } catch (e) {
-                console.error(e)
-                response.render('error', { error: e });
+            if (userSession) {
+                return userSession
             }
+            else {
+                let res = {
+                    'message': 'You are not authorized to view this page. Please login to proceed.'
+                }
+                response.render('error', { error: res })
+            }
+
+
+        } catch (e) {
+            console.error(e)
+            response.render('error', { error: e });
         }
+    }
 
 
     // async logoutUser(request, response) {

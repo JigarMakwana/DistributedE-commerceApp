@@ -229,23 +229,8 @@ class LoginService {
 
     async validateSecurityQ(request, user) {
         return new Promise(function (resolve, reject) {
-            const isSAValid = request.securityA === user.securityA;
-            if (isSAValid) {
-                    console.log("matched!");
-                    resolve(true)
-                } else {
-                    console.log("Invalid Security Answer");
-                const error = {
-                    message: `Invalid Security Answer. Please try again.`
-                };
-                console.log(error)
-                    reject(error)
-                }
-        })
-    }
-
-    async validateSecurityQA(request, user) {
-        return new Promise(function (resolve, reject) {
+            console.log(request.securityQ)
+            console.log(user.securityQ)
             const isSQValid = request.securityQ === user.securityQ;
             if (isSQValid) {
                 console.log("matched!");
@@ -258,6 +243,26 @@ class LoginService {
                 console.log(error)
                 reject(error)
             }
+        })
+    }
+
+    async validateSecurityA(request, user) {
+        return new Promise(function (resolve, reject) {
+            console.log(request.securityA)
+            console.log(user.securityA)
+
+            const isSAValid = request.securityA === user.securityA;
+            if (isSAValid) {
+                    console.log("matched!");
+                    resolve(true)
+                } else {
+                    console.log("Invalid Security Answer");
+                const error = {
+                    message: `Invalid Security Answer. Please try again.`
+                };
+                console.log(error)
+                    reject(error)
+                }
         })
     }
 
