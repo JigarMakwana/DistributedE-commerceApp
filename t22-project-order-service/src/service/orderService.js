@@ -26,6 +26,10 @@ class Service {
             };
             reject(err_response)
           } else {
+
+
+            console.log(`orderId: ${rows.insertId}`)
+
             for (var i = 0; i < request['items'].length; i++) {
               let insertOrderItemQuery = 'INSERT INTO Order_Item SET ?';
               let newOrderItem = {
@@ -46,7 +50,8 @@ class Service {
                   reject(err_response)
                 } else {
                   let response = {
-                    messsage: `Successfully created the order`
+                    messsage: `Successfully created the order`,
+                    data: newOrderItem
                   };
                   resolve(response)
                 }

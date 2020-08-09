@@ -7,8 +7,14 @@ create table Orders (
     );
 create table Order_Item(
     orderID int NOT NULL, 
-    itemID int, qty long, 
+    itemID int, 
+    qty long, 
     name VARCHAR(200),
     FOREIGN KEY (orderID) REFERENCES Orders(orderID)
 );
-create table Items (itemID int PRIMARY KEY AUTO_INCREMENT, itemName varchar(50) NOT NULL, qty int not null);
+
+create table order_transaction(
+    orderID int NOT NULL, 
+    transactionId VARCHAR(200),
+    FOREIGN KEY (orderID) REFERENCES Orders(orderID)
+);
