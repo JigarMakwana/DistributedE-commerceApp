@@ -107,6 +107,40 @@ class WalletController {
     }
 
 
+    async deductAmount(request, response) {
+        try {
+            let walletService = new Service()
+            let responseObj = await walletService.deductAmountFromWallet(request.body.userId, request.body.amount, request.body.globalTransactionId);
+            response.send(responseObj);
+        } catch (e) {
+            console.error(e);
+            response.status(500).send('error', { error: e.error });
+        }
+    }
+
+
+    async commitDeductAmount(request, response) {
+        try {
+            let walletService = new Service()
+            let responseObj = await walletService.commitWalletTransaction(request.body.globalTransactionId);
+            response.send(responseObj);
+        } catch (e) {
+            console.error(e);
+            response.status(500).send('error', { error: e.error });
+        }
+    }
+
+    async rollbackDeductAmount(request, response) {
+        try {
+            let walletService = new Service()
+            let responseObj = await walletService.rollbackWalletTransaction(request.body.globalTransactionId);
+            response.send(responseObj);
+        } catch (e) {
+            console.error(e);
+            response.status(500).send('error', { error: e.error });
+        }
+    }
+
 
 }
 module.exports = WalletController

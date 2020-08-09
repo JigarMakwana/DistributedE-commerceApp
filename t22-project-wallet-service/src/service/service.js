@@ -1,4 +1,6 @@
-const mysqlConnection  = require('../connection/db-connection.js')
+const mysqlConnection = require('../connection/db-connection.js')
+
+let tempTransactionId = null
 
 // Service class for handling user operation
 class Service {
@@ -110,5 +112,147 @@ class Service {
         })
     }
 
+    async commitWalletTransaction(globalTransactionId) {
+        return new Promise(function (resolve, reject) {
+            try {
+
+                let updateQuery = 'XA COMMIT ?'
+                mysqlConnection.query(updateQuery, [globalTransactionId], async function (err, rows) {
+                    if (err) {
+                        console.error('row: ' + rows);
+                        console.error(err);
+                        let err_response = {
+                            error: `Error in committing the transaction`,
+                            messsage: err.sqlMessage
+                        };
+                        reject(err_response)
+                    } else {
+                        console.log(`responseObj in commit deduct wallet amount service`, rows)
+                        resolve(rows)
+                    }
+                })
+            }
+            catch (e) {
+                console.error(e)
+                throw Error(e)
+            }
+        })
+    }
+
+    async rollbackWalletTransaction(globalTransactionId) {
+        return new Promise(function (resolve, reject) {
+            try {
+
+                let updateQuery = 'XA ROLLBACK ?'
+                mysqlConnection.query(updateQuery, [globalTransactionId], async function (err, rows) {
+                    if (err) {
+                        console.error('row: ' + rows);
+                        console.error(err);
+                        let err_response = {
+                            error: `Error in committing the transaction`,
+                            messsage: err.sqlMessage
+                        };
+                        reject(err_response)
+                    } else {
+                        console.log(`responseObj in rollback deduct wallet amount service`, rows)
+                        resolve(rows)
+                    }
+                })
+            }
+            catch (e) {
+                console.error(e)
+                throw Error(e)
+            }
+        })
+    }
+
+    async deductAmountFromWallet(userId, amount, globalTransactionId) {
+        return new Promise(function (resolve, reject) {
+            try {
+
+                console.log(`temp transactionId: ${globalTransactionId}`)
+
+
+                let startTransaction = 'XA start ?'
+
+                mysqlConnection.query(startTransaction, [globalTransactionId], async function (err, rows) {
+                    if (err) {
+                        console.error('row: ' + rows);
+                        console.error(err);
+                        let err_response = {
+                            error: `Error in starting the transaction`,
+                            messsage: err.sqlMessage
+                        };
+                        reject(err_response)
+                    } else {
+                        console.log(`responseObj in startTransaction`, rows)
+
+                        let updateQuery = 'UPDATE wallet SET amount=amount-? WHERE userId=?';
+
+                        mysqlConnection.query(updateQuery, [amount, userId], async function (err, rows) {
+                            if (err) {
+                                console.error('row: ' + rows);
+                                console.error(err);
+                                let err_response = {
+                                    error: `Error in starting the transaction`,
+                                    messsage: err.sqlMessage
+                                };
+                                reject(err_response)
+                            } else {
+                                console.log(`responseObj in updateQuery`, rows)
+
+
+                                let endTransactionQuery = 'XA END ?'
+                                mysqlConnection.query(endTransactionQuery, [globalTransactionId], async function (err, rows) {
+                                    if (err) {
+                                        console.error('row: ' + rows);
+                                        console.error(err);
+                                        let err_response = {
+                                            error: `No record exist`,
+                                            messsage: err.sqlMessage
+                                        };
+                                        reject(err_response)
+                                    } else {
+                                        console.log(`responseObj in endTransactionQuery`, rows)
+
+
+                                        let prepareTransactionQuery = 'XA PREPARE ?'
+                                        mysqlConnection.query(prepareTransactionQuery, [globalTransactionId], async function (err, rows) {
+                                            if (err) {
+                                                console.error('row: ' + rows);
+                                                console.error(err);
+                                                let err_response = {
+                                                    error: `No record exist`,
+                                                    messsage: err.sqlMessage
+                                                };
+                                                reject(err_response)
+                                            } else {
+                                                console.log(`deduct wallet prepareTransactionQuery success`, rows)
+
+                                                resolve(rows)
+                                            }
+
+                                            //   resolve(rows)
+
+                                        })
+                                    }
+                                    // resolve(rows)
+                                })
+
+                                // resolve(rows)
+                            }
+                        })
+
+                    }
+
+                })
+            }
+            catch (e) {
+                console.error(e)
+                throw Error(e)
+            }
+        })
+    }
+
 }
-module.exports =  Service
+module.exports = Service

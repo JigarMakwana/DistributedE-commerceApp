@@ -1,5 +1,5 @@
-const WalletController  = require('../controller/controller.js')
-const joi  = require('joi')
+const WalletController = require('../controller/controller.js')
+const joi = require('joi')
 
 const routes = (app) => {
 
@@ -23,13 +23,28 @@ const routes = (app) => {
     });
 
     app.route('/wallet/addMoney').post(async (request, response) => {
-      var controller = new WalletController();
-      controller.editWallet(request, response);
+        var controller = new WalletController();
+        controller.editWallet(request, response);
     });
 
     app.route('/wallet/edit').post(async (request, response) => {
         var controller = new WalletController();
         controller.edit(request, response);
+    });
+
+    app.route('/wallet/deductAmount').post(async (request, response) => {
+        var controller = new WalletController();
+        controller.deductAmount(request, response)
+    });
+
+    app.route('/wallet/commitDeductAmount').post(async (request, response) => {
+        var controller = new WalletController();
+        controller.commitDeductAmount(request, response)
+    });
+
+    app.route('/wallet/rollbackDeductAmount').post(async (request, response) => {
+        var controller = new WalletController();
+        controller.rollbackDeductAmount(request, response)
     });
 
 }
