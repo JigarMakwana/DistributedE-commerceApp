@@ -15,7 +15,7 @@
             <% if (locals.error) { %>
             <div class="alert-failure"><%= error %></div>
                 <br/>
-                <form action="/<%= process.env.awsLambdaPath %>/" method="GET">
+                <form action="/" method="GET">
                     <input type="submit" class="btn btn-primary" value="View All Items">
                 </form>
             <% } %>

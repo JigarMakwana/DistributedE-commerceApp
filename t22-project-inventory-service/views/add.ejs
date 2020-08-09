@@ -12,12 +12,12 @@
 <body>
     <%- include("header"); -%>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/<%= process.env.awsLambdaPath %>/">items</a></li>
+        <li class="breadcrumb-item"><a href="/">items</a></li>
         <li class="breadcrumb-item active">Add</li>
     </ol>
     <div class="registration-form">
         <h1 class="display-4">Add a new Item</h1>
-        <form method="post" action="/<%= process.env.awsLambdaPath %>/add" ngNativeValidate>
+        <form method="post" action="/add" ngNativeValidate>
             <div class="form-group">
                 <label for="title">Item Name</label>
                 <input type="text" name="itemName" class="form-control" required>

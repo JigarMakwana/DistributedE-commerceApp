@@ -15,11 +15,11 @@
             <% if (locals.success) { %>
             <div class="alert-success"><%= success %></div>
                 <br/>
-                <form action="/<%= process.env.awsLambdaPath %>/add" method="GET">
+                <form action="/add" method="GET">
                     <input type="submit" class="btn btn-primary" value="Add More Items">
                 </form>
                 <br/>
-                <form action="/<%= process.env.awsLambdaPath %>/" method="GET">
+                <form action="/" method="GET">
                     <input type="submit" class="btn btn-primary" value="View All Items">
                 </form>
             <% } %>

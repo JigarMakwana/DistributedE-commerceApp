@@ -10,12 +10,12 @@
 <body>
 <%- include("header"); -%>
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/<%= process.env.awsLambdaPath %>/">items</a></li>
+    <li class="breadcrumb-item"><a href="/">items</a></li>
     <li class="breadcrumb-item active">Edit</li>
 </ol>
 <div class="registration-form" style="text-align:center">
     <h1 class="display-4">Update Quantity for Item ID: <%= itemId %> and Item Name: <%= itemName %></h1>
-    <form method="post" action="/<%= process.env.awsLambdaPath %>/edit">
+    <form method="post" action="/edit">
         <input id="itemId" name="itemId" type="hidden" value=<%= itemId %>>
         <input id="itemName" name="itemName" type="hidden" value="<%= itemName %>">
         <div class="form-group center" style="text-align:center">

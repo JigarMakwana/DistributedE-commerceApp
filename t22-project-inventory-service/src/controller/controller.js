@@ -94,7 +94,7 @@ class Controller {
         try {
             let responseObj = await global.itemService
                 .updateItem(itemId, itemName, qty, price);
-            return response.redirect('/'+awsLambdaPath+'/');
+            return response.redirect('/');
         } catch (e) {
             console.error(e);
             response.render('error', { error: e.error });
@@ -106,7 +106,7 @@ class Controller {
             console.log(request.body.itemId, request.body.itemName)
             let responseObj = await global.itemService.
             deleteItem(request.body.itemId, request.body.itemName);
-            return response.redirect('/'+awsLambdaPath+'/');
+            return response.redirect('/');
         } catch (e) {
             console.error(e);
             response.render('error', { error: e.error });
@@ -166,6 +166,7 @@ class Controller {
         }
     }
 
+
     async prepareUpdateItemTransaction(request, response) {
 
         let transactionId = request.body.transactionId
@@ -173,6 +174,18 @@ class Controller {
         let quantity = request.body.quantity;
         console.log(transactionId, itemId, quantity);
         try {
+
+            let itemService = new Service()
+            let isItemQtySufficient = await itemService.checkItemQuantityForEligibility(request.body.itemId, request.body.quantity)
+            if(isItemQtySufficient===undefined || isItemQtySufficient.eligibility===false){
+                response.send({
+                    messsage: `Transaction cannot be prepared due to insufficient item quantity`,
+                    transactionId: transactionId,
+                    success: false
+                });
+                return
+            }
+            
             let responseObj = await global.itemService
                 .prepareUpdateItemTransaction(transactionId, itemId, quantity);
             console.log(responseObj);

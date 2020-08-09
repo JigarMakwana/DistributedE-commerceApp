@@ -22,7 +22,7 @@
         <thead>
         <tr>
             <th>
-                <form class="d-inline" action="/<%= process.env.awsLambdaPath %>/specificItem" method="get">
+                <form class="d-inline" action="/specificItem" method="get">
                     <input type="input" name="itemId">
                     <input type="submit" value="Search" class="btn btn-primary">
                 </form>
@@ -46,12 +46,12 @@
                 <td><%= j.qty %></td>
                 <td><%= j.price %></td>
                 <td>
-                    <form class="d-inline" action="/<%= process.env.awsLambdaPath %>/items/editProcess" method="post">
+                    <form class="d-inline" action="/items/editProcess" method="post">
                         <input type="hidden" name="itemName" value="<%= j.itemName %>">
                         <input type="hidden" name="itemId" value="<%= j.itemId %>">
                         <input type="submit" value="Edit" class="btn btn-primary">
                     </form>
-                    <form class="d-inline" action="/<%= process.env.awsLambdaPath %>/items/delete" method="post">
+                    <form class="d-inline" action="/items/delete" method="post">
                         <input type="hidden" name="itemName" value="<%= j.itemName %>">
                         <input type="hidden" name="itemId" value="<%= j.itemId %>">
                         <input type="submit" value="Delete" class="btn btn-primary btn-danger">

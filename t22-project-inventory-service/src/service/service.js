@@ -1,5 +1,6 @@
 const axios= require ('axios')
 const mysqlConnection  = require('../connection/db-connection.js')
+
 // Service class for handling user operation
 class Service {
 
@@ -344,6 +345,53 @@ class Service {
             
         })
     }
+
+
+    async checkItemQuantityForEligibility(itemId, qty) {
+        let awsLambdaItemQtyCheckUrl = process.env.awsLambdaWalletCheckSvc || 'https://b3kg6ipse1.execute-api.us-east-1.amazonaws.com/production'
+        awsLambdaItemQtyCheckUrl = awsLambdaItemQtyCheckUrl + '/api/item/checkItemQuantityForOrder/'
+
+        let body = {
+            itemId: itemId,
+            quantity: qty
+        }
+
+        return new Promise(function (resolve, reject) {
+            try {
+                axios.post(awsLambdaItemQtyCheckUrl, body, {
+                    headers: {
+                        Accept: 'application/json'
+                    }
+                })
+                    .then(response => {
+                        console.log(response.data);
+                        resolve(response.data)
+                    })
+                    .catch(error => {
+                        console.log(error);
+
+                        if (error.response) {
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+
+                            let err_response = {
+                                error: error.response.data
+                            };
+                            reject(err_response)
+                        } else {
+                            let err_response = {
+                                error: error
+                            };
+                            reject(err_response)
+                        }
+                    });
+                }
+                catch (e) {
+                    console.error(e)
+                    throw Error(e)
+                }
+            })
+        }    
 
 }
 module.exports=Service
