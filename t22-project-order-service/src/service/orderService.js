@@ -107,7 +107,7 @@ class Service {
         console.log(`Requesting retrieval of the order with userID : ${user_id}`)
 
         // MySQL DB query for fetching the jobrecord
-        let get_Orders_query = 'SELECT t.insertId,f.itemID,f.qty,t.userID,t.amount FROM local_program.Orders as t,local_program.Order_Item as f where f.orderID = t.insertId and t.userID = ?';
+        let get_Orders_query = 'SELECT t.insertId,f.itemID,f.qty,t.userID,t.amount FROM Orders as t,Order_Item as f where f.orderID = t.insertId and t.userID = ?';
 
         // MySQL query execution
         let orderList = conn.query(get_Orders_query, user_id, async function (err, rows) {
