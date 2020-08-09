@@ -122,7 +122,7 @@ class WalletController {
 
             if(isUserWalletSufficient!=undefined && isUserWalletSufficient.eligibility){
                 let responseObj = await walletService.deductAmountFromWallet(request.body.userId, request.body.amount, request.body.globalTransactionId);
-                response.send(responseObj);
+                response.send({message:'successfully prepared wallet transaction', data: responseObj});
             }
             else{
                 response.status(409).send({error: 'User has insufficient funds in the wallet to process the order.'});
@@ -140,7 +140,7 @@ class WalletController {
         try {
             let walletService = new Service()
             let responseObj = await walletService.commitWalletTransaction(request.body.globalTransactionId);
-            response.send(responseObj);
+            response.send({message:'successfully committed wallet transaction', data: responseObj});
         } catch (e) {
             console.error(e);
             response.status(500).send('error', { error: e.error });
@@ -151,7 +151,7 @@ class WalletController {
         try {
             let walletService = new Service()
             let responseObj = await walletService.rollbackWalletTransaction(request.body.globalTransactionId);
-            response.send(responseObj);
+            response.send({message:'successfully rollbacked wallet transaction', data: responseObj});
         } catch (e) {
             console.error(e);
             response.status(500).send('error', { error: e.error });

@@ -1,12 +1,13 @@
 const dotenv = require('dotenv')
 const conn = require('../connection/db-connection.js')
+const axios = require('axios')
 dotenv.config()
 
 class TransactionService {
 
-  async createTransaction(orderId) {
+  async createTransaction(orderId, transactionId) {
 
-    let transactionId = Math.random().toString(36).slice(2)
+
 
     let newTransaction = {
       orderId: orderId,
@@ -32,6 +33,41 @@ class TransactionService {
             resolve(newTransaction)
           }
         })
+      }
+      catch (e) {
+        console.error(e)
+        throw Error(e)
+      }
+    })
+  }
+
+  async triggerWalletTransaction(transactionObject) {
+    let walletServiceURL = process.env.walletSvc || 'http://localhost:9090'
+    walletServiceURL = walletServiceURL + '/wallet/deductAmount/'
+
+    return new Promise(function (resolve, reject) {
+      try {
+        axios.post(walletServiceURL, transactionObject, {
+          headers: {
+            Accept: 'application/json'
+          }
+        })
+          .then(response => {
+            console.log(response.data);
+            resolve(response.data)
+          })
+          .catch(error => {
+            console.log(error);
+
+            if (error.response) {
+              console.log(error.response.data);
+              console.log(error.response.status);
+
+              reject(error.response.data)
+            } else {
+              reject(error)
+            }
+          });
       }
       catch (e) {
         console.error(e)
