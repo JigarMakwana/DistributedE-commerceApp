@@ -14,6 +14,8 @@ const userItemsSchema = joi.object().keys({
     // qty is required
     // and must be a positive number
     qty: joi.number().positive().required(),
+
+    price: joi.number().positive().required(),
 });
 
 // const partOrderSchema = joi.object().keys({
@@ -55,7 +57,8 @@ class Controller {
             // If schema validation passes, proceed with the service call.
             let itemObj = {
                 itemName: request.body.itemName,
-                qty: request.body.qty
+                qty: request.body.qty,
+                price: request.body.price
             }
 
             console.log(`Requesting service method for creation of the item: ${itemObj.itemName}`)
@@ -86,10 +89,11 @@ class Controller {
         let itemName = request.body.itemName;
         let itemId = request.body.itemId;
         let qty = request.body.quantity;
-        console.log(itemName, itemId, qty);
+        let price = request.body.price;
+        console.log(itemName, itemId, qty, price);
         try {
             let responseObj = await global.itemService
-                .updateItem(itemId, itemName, qty);
+                .updateItem(itemId, itemName, qty, price);
             return response.redirect('/'+awsLambdaPath+'/');
         } catch (e) {
             console.error(e);

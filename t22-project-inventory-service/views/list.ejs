@@ -34,6 +34,7 @@
                 <th>Item ID</th>
                 <th>Item Name</th>
                 <th>Quantity</th>
+                <th>Price</th>
                 <th></th>
             </tr>
         </thead>
@@ -43,6 +44,7 @@
                 <td><%= j.itemId %></td>
                 <td><%= j.itemName %></td>
                 <td><%= j.qty %></td>
+                <td><%= j.price %></td>
                 <td>
                     <form class="d-inline" action="/<%= process.env.awsLambdaPath %>/items/editProcess" method="post">
                         <input type="hidden" name="itemName" value="<%= j.itemName %>">
