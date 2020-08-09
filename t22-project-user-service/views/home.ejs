@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Jobs Management</title>
+  <title>Customer portal</title>
   <!-- Viewport mobile tag for sensible mobile support -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
@@ -16,6 +16,18 @@
   .display-4 {
     text-align: center;
   }
+
+  #wrap {
+    float: left;
+    position: relative;
+    left: 55%;
+  }
+
+  #content {
+    float: left;
+    position: relative;
+    left: -50%;
+  }
 </style>
 
 <body>
@@ -27,20 +39,34 @@
     <% } %>
   </div>
 
-  <div class="registration-form">
-    <form method="get" action="/viewJobs" ngNativeValidate>
-      <input type="submit" value="View Orders" class="btn btn-primary">
-    </form>
-
+  <div align="center">
+    <h1>Welcome to the customer portal</h1>
     <br>
-
-    <form method="get" action="/searchJob" ngNativeValidate>
-      <input type="submit" value="Search Orders" class="btn btn-primary">
-    </form>
-
+    <br>
+    <h5>Please Sign In to place the order!</h5>
+    <br>
+    <h5>If you are a new user please, Sign Up.</h5>
+    <br>
+    <h6>Happy ordering!</h6>
+    <br>
+    </div>
+  <div id="wrap">
+    <div id="content">
+    <h5>Sign Up Instructions:</h5>
+    <ol>
+    <li>Your password must be:</li>
+      <ul>
+    <li>at least 6 characters long            </li>
+    <li>contain at least 1 lowercase character</li>
+    <li>contain at least 1 uppercase character</li>
+    <li>contain at least one special character</li>
+      </ul>
+    <li>Youu must choose one of the available Security Questions</li>
+    <li>You must answer your Security Question</li>
+    </ol>
+    </div>
+    <br>
   </div>
-
-
   </div>
 </body>
 

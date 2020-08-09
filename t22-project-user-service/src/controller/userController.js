@@ -1,5 +1,6 @@
 const joi = require('joi')
 const UserService = require('../service/userService.js')
+const Service = require('../service/service.js')
 const jwt = require('jsonwebtoken')
 const Cookies = require('js-cookie')
 
@@ -111,7 +112,10 @@ class UserController {
                     maxAge: 5*60*1000, // Lifetime
                 })
 
-                response.render('home', { name: request.body.email });
+
+                let itemService = new Service()
+                let responseObj = await itemService.getAllItems()
+                response.render('list', { items: responseObj });
             }
         } catch (e) {
             console.error(`Error in authenticating the user: ${request.body.email}`)

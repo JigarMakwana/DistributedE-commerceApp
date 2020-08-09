@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Jobs Management</title>
+  <title>Customer portal</title>
   <!-- Viewport mobile tag for sensible mobile support -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
@@ -23,7 +23,7 @@
 </style>
 
 <body>
-  <%- include("header"); -%>
+<%- include("headerLoggedIn");-%>
   <h1 class="display-4">Available Products</h1>
   <div class="table-responsive">
     <table class="table cart  table-striped table-hover mx-auto w-auto">
@@ -31,7 +31,7 @@
         <tr>
           <th class="cart-product-name">Product</th>
           <th class="cart-product-price">Available Quantity</th>
-          <th class="cart-product-price">Unit Price</th>          
+          <th class="cart-product-price">Unit Price</th>
           <th class="cart-product-quantity">Quantity</th>
           <th class="cart-product-subtotal">Total</th>
           <th></th>

@@ -11,8 +11,9 @@ class Service {
     }
 
     async getAllItems() {
-        let getInventoryUrl = process.env.inventorySvcUrl || 'http://localhost:9090'
-        getInventoryUrl = getInventoryUrl + '/'
+        let getInventoryUrl = "https://2o3pti1up3.execute-api.us-east-1.amazonaws.com/production/api/items"
+
+            // getInventoryUrl = getInventoryUrl + '/'
 
         return new Promise(function (resolve, reject) {
             try {
