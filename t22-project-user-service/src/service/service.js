@@ -10,27 +10,28 @@ class Service {
     constructor() {
     }
 
-     // Get all items API call
-    // Service method for getting all items from the Inventory
     async getAllItems() {
+        let getInventoryUrl = process.env.inventorySvcUrl || 'http://localhost:9090'
+        getInventoryUrl = getInventoryUrl + '/'
+
         return new Promise(function (resolve, reject) {
             try {
-                var selectQuery = 'SELECT * FROM item';
-
-                let partRecords = mysqlConnection.query(selectQuery, async function (err, rows) {
-                    if (err) {
-                        console.error('row: ' + rows);
-                        console.error(err);
-                        let err_response = {
-                            error: `No record exist`,
-                            messsage: err.sqlMessage
-                        };
-                        reject(err_response)
-                    } else {
-                        console.log(`responseObj in edit service`, rows)
-                        resolve(rows)
+                axios.get(getInventoryUrl, {
+                    headers: {
+                        Accept: 'application/json'
                     }
                 })
+                    .then(response => {
+                        console.log(response.data);
+                        resolve(response.data)
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        let err_response = {
+                            error: error
+                        };
+                        reject(err_response)
+                    });
             }
             catch (e) {
                 console.error(e)
@@ -38,6 +39,35 @@ class Service {
             }
         })
     }
+
+     // Get all items API call
+    // Service method for getting all items from the Inventory
+    // async getAllItems() {
+    //     return new Promise(function (resolve, reject) {
+    //         try {
+    //             var selectQuery = 'SELECT * FROM item';
+
+    //             let partRecords = mysqlConnection.query(selectQuery, async function (err, rows) {
+    //                 if (err) {
+    //                     console.error('row: ' + rows);
+    //                     console.error(err);
+    //                     let err_response = {
+    //                         error: `No record exist`,
+    //                         messsage: err.sqlMessage
+    //                     };
+    //                     reject(err_response)
+    //                 } else {
+    //                     console.log(`responseObj in edit service`, rows)
+    //                     resolve(rows)
+    //                 }
+    //             })
+    //         }
+    //         catch (e) {
+    //             console.error(e)
+    //             throw Error(e)
+    //         }
+    //     })
+    // }
 
     async saveJobSearchRecord(jobName) {
 
