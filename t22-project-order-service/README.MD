@@ -1,6 +1,6 @@
 # User service.
 
-This is a NodeJs application built using Express and EJS for managing orders.
+This is a NodeJs application built using Express and EJS for managing users.
 
 
 ## Installation
