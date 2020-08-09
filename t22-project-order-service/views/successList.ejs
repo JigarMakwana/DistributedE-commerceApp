@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Jobs Management</title>
+    <!-- Viewport mobile tag for sensible mobile support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+</head>
+<style>
+    .table {
+        width: 70% !important
+    }
+
+    .display-4 {
+        text-align: center;
+    }
+</style>
+
+<body>
+
+    <h1 class="display-4">Jobs List</h1>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover mx-auto w-auto">
+            <thead>
+                <tr>
+                    <th>
+                        <form class="d-inline" action="/getOrders" method="get">
+                            <input type="input" name="user_id">
+                            <input type="submit" value="Enter UserID" class="btn btn-primary">
+                        </form>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach(function(o){ %>
+                <tr>
+                    <td>orderID: <%= o.OrderID %></td>
+                    <td>amount: <%= o.amount %></td>
+                </tr>
+                
+                <tr>
+
+                    <thead>
+                        <tr>
+                            <th>
+                                ItemName
+                            </th>
+                            <th>ItemNo</th>
+                            <th>Quantiy</th>
+                        </tr>
+                    </thead>
+
+                </tr>
+                <% o.items.forEach(function(j){ %>
+                <tr>
+                    <td> Arjun</td>
+                    <td><%= j.itemID %></td>
+                    <td><%= j.qty %></td>
+
+                </tr>
+                <% }) %>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

@@ -5,8 +5,8 @@ dotenv.config()
 const routes = (app) => {
 
     app.route('/')
-        .get((request, response) => {
-            response.render('home')
+        .get(async (request, response) => {
+            response.render('list')
         })
 
     app.route('/add')
@@ -20,5 +20,10 @@ const routes = (app) => {
             var controller = new Controller()
             controller.delete(request, response)
         });
+    app.route('/getOrders').get(async (request,response)=>{
+        var controller = new Controller()
+            controller.getOrders(request, response)
+    });
+
 }
 module.exports = routes
