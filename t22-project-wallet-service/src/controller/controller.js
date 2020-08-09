@@ -116,21 +116,21 @@ class WalletController {
         try {
             let walletService = new Service()
 
-
+            // Call User wallet balance eligibility AWS Lambda function
             let isUserWalletSufficient = await walletService.checkWalletBalanceForEligibility(request.body.userId, request.body.amount)
 
-            if(isUserWalletSufficient){
+            if(isUserWalletSufficient!=undefined && isUserWalletSufficient.eligibility){
                 let responseObj = await walletService.deductAmountFromWallet(request.body.userId, request.body.amount, request.body.globalTransactionId);
                 response.send(responseObj);
             }
             else{
-
+                response.status(409).send({error: 'User has insufficient funds in the wallet to process the order.'});
             }
 
 
         } catch (e) {
             console.error(e);
-            response.status(500).send(e);
+            response.status(500).send({error: e});
         }
     }
 

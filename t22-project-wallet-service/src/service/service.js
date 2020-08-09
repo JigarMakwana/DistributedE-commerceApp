@@ -1,4 +1,7 @@
 const mysqlConnection = require('../connection/db-connection.js')
+const axios = require('axios')
+const dotenv = require('dotenv')
+dotenv.config()
 
 let tempTransactionId = null
 
@@ -112,52 +115,45 @@ class Service {
         })
     }
 
-    async commitWalletTransaction(globalTransactionId) {
+
+    async checkWalletBalanceForEligibility(userId, amount) {
+        let awsLambdaWalletCheckUrl = process.env.awsLambdaWalletCheckSvc || 'https://aehwm51v7c.execute-api.us-east-1.amazonaws.com/production/'
+        awsLambdaWalletCheckUrl = awsLambdaWalletCheckUrl + '/api/wallet/checkWalletBalanceForOrder/'
+
+        let body = {
+            userId: userId,
+            amount: amount
+        }
+
         return new Promise(function (resolve, reject) {
             try {
-
-                let updateQuery = 'XA COMMIT ?'
-                mysqlConnection.query(updateQuery, [globalTransactionId], async function (err, rows) {
-                    if (err) {
-                        console.error('row: ' + rows);
-                        console.error(err);
-                        let err_response = {
-                            error: `Error in committing the transaction`,
-                            messsage: err.sqlMessage
-                        };
-                        reject(err_response)
-                    } else {
-                        console.log(`responseObj in commit deduct wallet amount service`, rows)
-                        resolve(rows)
+                axios.post(awsLambdaWalletCheckUrl, body, {
+                    headers: {
+                        Accept: 'application/json'
                     }
                 })
-            }
-            catch (e) {
-                console.error(e)
-                throw Error(e)
-            }
-        })
-    }
+                    .then(response => {
+                        console.log(response.data);
+                        resolve(response.data)
+                    })
+                    .catch(error => {
+                        console.log(error);
 
-    async rollbackWalletTransaction(globalTransactionId) {
-        return new Promise(function (resolve, reject) {
-            try {
+                        if (error.response) {
+                            console.log(error.response.data);
+                            console.log(error.response.status);
 
-                let updateQuery = 'XA ROLLBACK ?'
-                mysqlConnection.query(updateQuery, [globalTransactionId], async function (err, rows) {
-                    if (err) {
-                        console.error('row: ' + rows);
-                        console.error(err);
-                        let err_response = {
-                            error: `Error in committing the transaction`,
-                            messsage: err.sqlMessage
-                        };
-                        reject(err_response)
-                    } else {
-                        console.log(`responseObj in rollback deduct wallet amount service`, rows)
-                        resolve(rows)
-                    }
-                })
+                            let err_response = {
+                                error: error.response.data
+                            };
+                            reject(err_response)
+                        } else {
+                            let err_response = {
+                                error: error
+                            };
+                            reject(err_response)
+                        }
+                    });
             }
             catch (e) {
                 console.error(e)
@@ -245,6 +241,61 @@ class Service {
 
                     }
 
+                })
+            }
+            catch (e) {
+                console.error(e)
+                throw Error(e)
+            }
+        })
+    }
+
+
+    async commitWalletTransaction(globalTransactionId) {
+        return new Promise(function (resolve, reject) {
+            try {
+
+                let updateQuery = 'XA COMMIT ?'
+                mysqlConnection.query(updateQuery, [globalTransactionId], async function (err, rows) {
+                    if (err) {
+                        console.error('row: ' + rows);
+                        console.error(err);
+                        let err_response = {
+                            error: `Error in committing the transaction`,
+                            messsage: err.sqlMessage
+                        };
+                        reject(err_response)
+                    } else {
+                        console.log(`responseObj in commit deduct wallet amount service`, rows)
+                        resolve(rows)
+                    }
+                })
+            }
+            catch (e) {
+                console.error(e)
+                throw Error(e)
+            }
+        })
+    }
+
+    async rollbackWalletTransaction(globalTransactionId) {
+        return new Promise(function (resolve, reject) {
+            try {
+
+                let updateQuery = 'XA ROLLBACK ?'
+                mysqlConnection.query(updateQuery, [globalTransactionId], async function (err, rows) {
+                    if (err) {
+                        console.error('row: ' + rows);
+                        console.error(err);
+                        let err_response = {
+                            error: `Error in committing the transaction`,
+                            messsage: err.sqlMessage
+                        };
+                        reject(err_response)
+                    } else {
+                        console.log(`responseObj in rollback deduct wallet amount service`, rows)
+                        resolve(rows)
+                    }
                 })
             }
             catch (e) {
