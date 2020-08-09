@@ -7,17 +7,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <style>
+        .registration-form {
+            width: 300px;
+            margin: 0 auto;
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+
+        .alert-success {
+            color: #034e00;
+        }
+
+        .alert-failure {
+            color: #ca0000;
+        }
+
+        .registration-form h1 {
+            text-align: center;
+            color: #4d4d4d;
+            font-size: 24px;
+            padding: 20px 0 20px 0;
+        }
+
+        .registration-form input[type="password"],
+        .registration-form input[type="text"],
+        .registration-form input[type="email"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #dddddd;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .registration-form input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #2e4e6d;
+            border: 0;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
 </head>
 
 <body>
-<%- include("header"); -%>
-<ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Orders</a></li>
-    <li class="breadcrumb-item active">Add</li>
-</ol>
+<%- include("headerLoggedIn");-%>
 <div class="registration-form">
     <h1 class="display-4">Place a new Order</h1>
-    <form method="post" action="placeOrder" ngNativeValidate>
+    <form method="post" action="placeOrder" >
         <div class="form-group">
             <label for="topic">Item:</label>
             <select id="Item" name="Item" class="form-control" required>

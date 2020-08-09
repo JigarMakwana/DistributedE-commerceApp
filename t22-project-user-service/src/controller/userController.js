@@ -99,6 +99,7 @@ class UserController {
             // Step - 3
             // generate and manage the stored session
             Cookies.set("email", userObj.email);
+            Cookies.set("name", userObj.name);
             let userSession = await userService.generateJWTToken(userDBObj)
 
             if (userSession) {
@@ -110,7 +111,7 @@ class UserController {
                     maxAge: 5*60*1000, // Lifetime
                 })
 
-                response.render('home', { success: request.body.email });
+                response.render('home', { name: request.body.email });
             }
         } catch (e) {
             console.error(`Error in authenticating the user: ${request.body.email}`)
@@ -224,46 +225,49 @@ class UserController {
         }
     }
 
+    async logoutUser(request, response) {
+        Cookies.remove("email");
+        Cookies.remove("name");
+        response.render('login', { success: `User has been logged out successfully.` });
 
-    // async logoutUser(request, response) {
-    //     try {
-
-    //         let userObj = {
-    //             email: request.query.email,
-    //         }
-
-    //         console.log(`Requesting service method logout for the user: ${userObj.email}`)
-
-    //         let authService = new UserService()
-
-    //         // Step -1           password: request.body.password
-    //         // Fetch user with email id
-    //         let userFromDB = await authService.fetchUserWithEmail(userObj)
-
-    //         if (!userFromDB) {
-    //             throw Error(`Error in fetching the user: ${userObj.email}`)
-    //         }
-
-    //         // Step -2
-    //         // updating the user_session
-    //         let invalidateUser = await authService.invalidateSession(userFromDB)
-
-    //         if (!invalidateUser) {
-    //             throw Error(`Cannot logout the user ${userObj.email}`)
-    //         }
-    //         else {
-
-    //             // clearing the token in the cookie
-    //             response.clearCookie('token')
-    //             console.log(`User: ${userObj.email} has been logged out successfully. Redirecting the user.`)
-    //             response.render('login', { success: invalidateUser });
-    //         }
-    //     } catch (e) {
-    //         console.error(`Error in logout for the user: ${request.body.email}`)
-    //         console.error(e)
-    //         response.render('error', { error: e });
-    //     }
-    // }
+        // try {
+        //
+        //     let userObj = {
+        //         email: request.query.email,
+        //     }
+        //
+        //     console.log(`Requesting service method logout for the user: ${userObj.email}`)
+        //
+        //     let authService = new UserService()
+        //
+        //     // Step -1           password: request.body.password
+        //     // Fetch user with email id
+        //     let userFromDB = await authService.fetchUserWithEmail(userObj)
+        //
+        //     if (!userFromDB) {
+        //         throw Error(`Error in fetching the user: ${userObj.email}`)
+        //     }
+        //
+        //     // Step -2
+        //     // updating the user_session
+        //     let invalidateUser = await authService.invalidateSession(userFromDB)
+        //
+        //     if (!invalidateUser) {
+        //         throw Error(`Cannot logout the user ${userObj.email}`)
+        //     }
+        //     else {
+        //
+        //         // clearing the token in the cookie
+        //         response.clearCookie('token')
+        //         console.log(`User: ${userObj.email} has been logged out successfully. Redirecting the user.`)
+        //         response.render('login', { success: invalidateUser });
+        //     }
+        // } catch (e) {
+        //     console.error(`Error in logout for the user: ${request.body.email}`)
+        //     console.error(e)
+        //     response.render('error', { error: e });
+        // }
+    }
 
 }
 

@@ -49,6 +49,12 @@ const routes = (app) => {
             userController.registerUser(request, response)
         })
 
+    app.route('/logout')
+        .get(async (request, response) => {
+            let userController = new UserController()
+            userController.logoutUser(request, response)
+        })
+
     app.route('/searchJob')
         .get((request, response) => {
             response.render('getJob')
