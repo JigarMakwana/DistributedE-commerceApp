@@ -32,5 +32,11 @@ const routes = (app) => {
         controller.acceptOrder(request, response)
     })
 
+    app.route('/rejectOrder')
+    .post((request, response) => {
+        var controller = new Controller()
+        controller.rejectOrder(request, response)
+    })
+
 }
 module.exports = routes

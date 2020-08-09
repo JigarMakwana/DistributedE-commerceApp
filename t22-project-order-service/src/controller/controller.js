@@ -139,10 +139,15 @@ class Controller {
 
 
         // Step - 3
+        // trigger commit API of inventory service
+        // TODO
+
+
+        // Step - 4
         // change order status
         let updateResponse = await orderService.updateStatusForOrder(request.body.orderID, 'ACCEPTED')
 
-      //  response.json(walletCommitResponse);
+        //  response.json(walletCommitResponse);
         response.render('success', { success: walletCommitResponse.message });
       }
       else {
@@ -154,7 +159,7 @@ class Controller {
 
 
       if (e.error.error === "Error in starting the transaction") {
-        response.status(409).send({ error: "Error in creating the order. Please approve or reject the previous order." })
+        response.status(409).send({ error: "Error in accepting the order. Please approve or reject the previous order." })
       } else {
         response.status(500).send(e)
       }
@@ -163,6 +168,65 @@ class Controller {
     }
   }
 
+
+  async rejectOrder(request, response) {
+    try {
+
+      console.log(`request orderid`)
+      console.log(request.body)
+
+
+      // Step -1
+      // fetch transaction id for order id
+      let orderService = new Service()
+      let transactionObj = await orderService.getTransactionForOrder(request.body.orderID)
+
+      console.log(`transactionObj: ${transactionObj}`)
+      console.log(transactionObj)
+
+      if (transactionObj != undefined) {
+        let transactionId = transactionObj[0].transactionId
+
+        let walletTransactionRequest = {
+          globalTransactionId: transactionId
+        }
+
+
+        // Step - 2
+        // trigger rollback API of wallet service
+        let transactionService = new TransactionService();
+        let walletRollbackResponse = await transactionService.rejectWalletTransaction(walletTransactionRequest)
+
+        console.log(`walletCommitResponse:`, walletRollbackResponse)
+
+        // Step - 3
+        // trigger rollback API of inventory service
+
+
+        // Step - 4
+        // change order status
+        let updateResponse = await orderService.updateStatusForOrder(request.body.orderID, 'CANCELLED')
+
+        //  response.json(walletCommitResponse);
+        response.render('success', { success: walletRollbackResponse.message });
+      }
+      else {
+        response.status(409).send({ error: "error in cancelling the order. Please try again" })
+      }
+
+    } catch (e) {
+      console.error(e)
+
+
+      if (e.error.error === "Error in cancelling the transaction") {
+        response.status(409).send({ error: "Error in creating the order. Please approve or reject the previous order." })
+      } else {
+        response.status(500).send(e)
+      }
+
+
+    }
+  }
 
 }
 module.exports = Controller

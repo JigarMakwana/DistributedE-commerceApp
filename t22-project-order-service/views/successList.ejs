@@ -57,8 +57,8 @@
                         </form>
                     </td>
                     <td>
-                        <form class="d-inline" action="/parts/delete/" method="post">
-                            <input type="hidden" name="partId" value="<%= o.OrderID%>">
+                        <form class="d-inline" action="/rejectOrder" method="post">
+                            <input type="hidden" name="orderID" value="<%= o.orderID%>">
                             <input type="submit" value="Reject" class="btn btn-primary btn-danger">
                         </form>
                     </td>
