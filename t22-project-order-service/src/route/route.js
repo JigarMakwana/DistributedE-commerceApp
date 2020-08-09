@@ -26,5 +26,11 @@ const routes = (app) => {
             controller.getOrders(request, response)
     });
 
+    app.route('/acceptOrder')
+    .post((request, response) => {
+        var controller = new Controller()
+        controller.acceptOrder(request, response)
+    })
+
 }
 module.exports = routes

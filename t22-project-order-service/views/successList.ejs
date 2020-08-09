@@ -51,8 +51,8 @@
                     <td><%= o.status %></td>
                     <td><%= o.date %></td>
                     <td>
-                        <form class="d-inline" action="<%= process.env.awsLambdaPath %>/wallet/addMoney/" method="post">
-                            <input type="hidden" name="userId" value="<%= o.OrderID%>">
+                        <form class="d-inline" action="<%= process.env.awsLambdaPath %>/acceptOrder" method="post">
+                            <input type="hidden" name="orderID" value="<%= o.orderID%>">
                             <input type="submit" value="Accept" class="btn btn-primary">
                         </form>
                     </td>
