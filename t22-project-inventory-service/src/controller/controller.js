@@ -94,7 +94,7 @@ class Controller {
         try {
             let responseObj = await global.itemService
                 .updateItem(itemId, itemName, qty, price);
-            return response.redirect('/'+awsLambdaPath+'/');
+            return response.redirect('/');
         } catch (e) {
             console.error(e);
             response.render('error', { error: e.error });
@@ -106,7 +106,7 @@ class Controller {
             console.log(request.body.itemId, request.body.itemName)
             let responseObj = await global.itemService.
             deleteItem(request.body.itemId, request.body.itemName);
-            return response.redirect('/'+awsLambdaPath+'/');
+            return response.redirect('/');
         } catch (e) {
             console.error(e);
             response.render('error', { error: e.error });
