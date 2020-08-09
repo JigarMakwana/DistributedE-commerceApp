@@ -182,6 +182,22 @@ class UserController {
             let isRegistered = await userService
                 .registerUser(userObj)
 
+            // Get User Id
+            let userId = await userService
+                .getUserByEmail(userObj.email)
+
+            let walletObj = {
+                name: request.body.name,
+                email: request.body.email,
+                userId: userId,
+                amount: 100
+            }
+
+            // Create user Wallet
+            let isWalletCreated = await userService
+                .createWallet(walletObj)
+
+
             response.render('registerSuccess', { success: request.body.name });
             // // Step - 3
             // // generate and manage the stored session

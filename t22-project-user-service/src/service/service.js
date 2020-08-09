@@ -42,7 +42,7 @@ class Service {
     }
 
     async getWalletBalance() {
-        let getwalletUrl =  "http://localhost:8080/wallet?userId=2";
+        let getwalletUrl =  "http://localhost:8080/wallet?userId=18";
 
             // getInventoryUrl = getInventoryUrl + '/'
 

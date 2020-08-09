@@ -1,6 +1,7 @@
 const mysqlConnection = require('../connection/db-connection.js')
 const jwt = require('jsonwebtoken')
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs")
+const axios = require('axios')
 // Service class for handling user functions
 class LoginService {
 
@@ -175,6 +176,7 @@ class LoginService {
     }
 
     async registerUser(userObj) {
+        var userId
         // MySQL DB query
         let sqlInsert = "INSERT INTO user SET ?";
         return new Promise(function (resolve, reject) {
@@ -198,12 +200,66 @@ class LoginService {
                         reject(err_response)
                     } else {
                         console.log(`User: ${userObj.email} successfully registered.`)
-                        const user = rows[0];
-                        console.log(user)
-                        resolve(user)
+                        resolve(rows)
                     }
                 });
             });
+        })
+    }
+
+    async getUserByEmail (email)  {
+        return new Promise(function (resolve, reject) {
+            let where = "email = ?";
+            let sqlSelect = "SELECT * FROM user WHERE " + where;
+            mysqlConnection.query(sqlSelect, email, async function (err, result) {
+                if (err) {
+                    console.log(err);
+                    let err_response = {
+                        error: `Error in getting the user`,
+                        messsage: err.sqlMessage
+                    };
+                    reject(err_response)
+                } else if (result.length === 0) {
+                    console.log("Email Id is not registered");
+                    let err_response = {
+                        error: `User not found`,
+                    };
+                    reject(err_response)
+                } else {
+                    console.log(result);
+                    let userId = result[0].user_id;
+                    console.log("This is userid: " + userId);
+                    resolve(userId);
+                }
+            });
+        })
+    }
+
+    async createWallet(walletObj) {
+        let createWalletURL =  "http://localhost:8080/wallet/add";
+        return new Promise(function (resolve, reject) {
+            try {
+                axios.post(createWalletURL, walletObj, {
+                    headers: {
+                        Accept: 'application/json'
+                    }
+                })
+                    .then(response => {
+                        console.log(response.data);
+                        resolve(response.data)
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        let err_response = {
+                            error: error
+                        };
+                        reject(err_response)
+                    });
+            }
+            catch (e) {
+                console.error(e)
+                throw Error(e)
+            }
         })
     }
 
@@ -253,16 +309,16 @@ class LoginService {
 
             const isSAValid = request.securityA === user.securityA;
             if (isSAValid) {
-                    console.log("matched!");
-                    resolve(true)
-                } else {
-                    console.log("Invalid Security Answer");
+                console.log("matched!");
+                resolve(true)
+            } else {
+                console.log("Invalid Security Answer");
                 const error = {
                     message: `Invalid Security Answer. Please try again.`
                 };
                 console.log(error)
-                    reject(error)
-                }
+                reject(error)
+            }
         })
     }
 
@@ -339,7 +395,6 @@ class LoginService {
             }
         })
     }
-
 
     async invalidateSession(user) {
         return new Promise(function (resolve, reject) {
