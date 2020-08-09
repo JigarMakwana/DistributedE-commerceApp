@@ -104,5 +104,65 @@ class Controller {
       });
     }
   }
+
+
+
+  async acceptOrder(request, response) {
+    try {
+
+      console.log(`request orderid`)
+      console.log(request.body)
+
+
+      // Step -1
+      // fetch transaction id for order id
+      let orderService = new Service()
+      let transactionObj = await orderService.getTransactionForOrder(request.body.orderID)
+
+      console.log(`transactionObj: ${transactionObj}`)
+      console.log(transactionObj)
+
+      if (transactionObj != undefined) {
+        let transactionId = transactionObj[0].transactionId
+
+        let walletTransactionRequest = {
+          globalTransactionId: transactionId
+        }
+
+
+        // Step - 2
+        // trigger commit API of wallet service
+        let transactionService = new TransactionService();
+        let walletCommitResponse = await transactionService.acceptWalletTransaction(walletTransactionRequest)
+
+        console.log(`walletCommitResponse:`, walletCommitResponse)
+
+
+        // Step - 3
+        // change order status
+        let updateResponse = await orderService.updateStatusForOrder(request.body.orderID, 'ACCEPTED')
+
+      //  response.json(walletCommitResponse);
+        response.render('success', { success: walletCommitResponse.message });
+      }
+      else {
+        response.status(409).send({ error: "error in accepting the order. Please try again" })
+      }
+
+    } catch (e) {
+      console.error(e)
+
+
+      if (e.error.error === "Error in starting the transaction") {
+        response.status(409).send({ error: "Error in creating the order. Please approve or reject the previous order." })
+      } else {
+        response.status(500).send(e)
+      }
+
+
+    }
+  }
+
+
 }
 module.exports = Controller

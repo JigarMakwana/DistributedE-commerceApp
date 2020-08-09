@@ -76,6 +76,41 @@ class TransactionService {
     })
   }
 
+  async acceptWalletTransaction(transactionObject) {
+    let walletServiceURL = process.env.walletSvc || 'http://localhost:9090'
+    walletServiceURL = walletServiceURL + '/wallet/commitDeductAmount/'
+
+    return new Promise(function (resolve, reject) {
+      try {
+        axios.post(walletServiceURL, transactionObject, {
+          headers: {
+            Accept: 'application/json'
+          }
+        })
+          .then(response => {
+            console.log(response.data);
+            resolve(response.data)
+          })
+          .catch(error => {
+            console.log(error);
+
+            if (error.response) {
+              console.log(error.response.data);
+              console.log(error.response.status);
+
+              reject(error.response.data)
+            } else {
+              reject(error)
+            }
+          });
+      }
+      catch (e) {
+        console.error(e)
+        throw Error(e)
+      }
+    })
+  }
+
 
 }
 

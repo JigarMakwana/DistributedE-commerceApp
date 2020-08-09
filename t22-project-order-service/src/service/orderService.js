@@ -179,6 +179,67 @@ class Service {
     })
   }
 
+
+  async getTransactionForOrder(orderId) {
+    return new Promise(function (resolve, reject) {
+      try {
+
+        var selectQuery = 'SELECT * FROM order_transaction where orderID='+orderId
+
+        // MySQL query execution
+        let orderList = conn.query(selectQuery, async function (err, rows) {
+          if (err) {
+            console.error('row: ' + rows)
+            console.error(err)
+            let err_response = {
+              error: `No record exist`,
+              messsage: err.sqlMessage
+            };
+
+            reject(err_response)
+          } else {
+            resolve(rows)
+          }
+        })
+      }
+      catch (e) {
+        console.error(`Error in retrieval of the transaction with orderID : ${orderId}`)
+        console.error(e)
+        throw Error(e)
+      }
+    })
+  }
+
+  async updateStatusForOrder(orderId, status) {
+    return new Promise(function (resolve, reject) {
+      try {
+
+        var selectQuery = 'UPDATE Orders SET status = ? WHERE orderID = ?'
+
+        // MySQL query execution
+        let orderList = conn.query(selectQuery, [status, orderId], async function (err, rows) {
+          if (err) {
+            console.error('row: ' + rows)
+            console.error(err)
+            let err_response = {
+              error: `No record exist`,
+              messsage: err.sqlMessage
+            };
+
+            reject(err_response)
+          } else {
+            resolve(rows)
+          }
+        })
+      }
+      catch (e) {
+        console.error(`Error in updating the orderID : ${orderId}`)
+        console.error(e)
+        throw Error(e)
+      }
+    })
+  }
+
 }
 
 module.exports = Service
