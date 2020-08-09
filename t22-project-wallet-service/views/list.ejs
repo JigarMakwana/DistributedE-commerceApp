@@ -22,19 +22,17 @@
         <thead>
         <thead>
             <tr>
-                <th>user id</th>
                 <th>Name</th>
-                <th>email</th>
-                <th>wallet balance</th>
+                <th>Email</th>
+                <th>Wallet balance</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             <% wallet.forEach(function(p){ %>
             <tr>
-                <td><%= p.userId %></td>
-                <td><%= null %></td>
-                <td><%= null %></td>
+                <td><%= p.name %></td>
+                <td><%= p.email %></td>
                 <td><%= p.amount %></td>
                 <td>
                     <form class="d-inline" action="<%= process.env.awsLambdaPath %>/wallet/addMoney/" method="post">

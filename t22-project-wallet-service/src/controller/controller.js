@@ -8,11 +8,10 @@ const awsLambdaPath = process.env.awsLambdaPath || ''
 
 // Schema
 const userWalletSchema = joi.object().keys({
-    // partID is required
     userId: joi.number().positive().required(),
-
-    // partID is required
     amount: joi.number().positive().required(),
+    name: joi.string().required(),
+    email: joi.string().email().required()
 
 });
 
@@ -64,7 +63,9 @@ class WalletController {
             // If schema validation passes, proceed with the service call.
             let userWallet = {
                 userId: request.body.userId,
-                amount: request.body.amount
+                amount: request.body.amount,
+                email: request.body.email,
+                name: request.body.name
             }
 
             console.log(`Calling service method for creating the user wallet: ${userWallet.userId}`)

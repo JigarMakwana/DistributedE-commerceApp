@@ -18,7 +18,9 @@ class Service {
             try {
                 let newWalletData = {
                     userId: userWallet.userId,
-                    amount: userWallet.amount || 0.00
+                    amount: userWallet.amount || 0.00,
+                    email: userWallet.email,
+                    name: userWallet.name
                 }
 
                 console.log(`Requesting wallet creation for the user: ${newWalletData.userId}`)
