@@ -31,7 +31,8 @@ class Service {
               let newOrderItem = {
                 orderID: rows.insertId,
                 itemID: request['items'][i].itemID,
-                qty: request['items'][i].qty
+                qty: request['items'][i].qty,
+                name: request['items'][i].name
               }
 
               conn.query(insertOrderItemQuery, newOrderItem, async function (err, rows) {
@@ -104,13 +105,18 @@ class Service {
   async getOrders(user_id) {
     return new Promise(function (resolve, reject) {
       try {
-        console.log(`Requesting retrieval of the order with userID : ${user_id}`)
 
-        // MySQL DB query for fetching the jobrecord
-        let get_Orders_query = 'SELECT t.insertId,f.itemID,f.qty,t.userID,t.amount FROM Orders as t,Order_Item as f where f.orderID = t.insertId and t.userID = ?';
+        if (user_id != undefined) {
+          var selectQuery = 'SELECT * FROM Orders as t,Order_Item as f where f.orderID = t.orderID and t.userID=' + user_id;
+          console.log(`Requesting retrieval of the order with userID : ${user_id}`)
+        }
+        else {
+          var selectQuery = 'SELECT * FROM Orders as t,Order_Item as f where f.orderID = t.orderID'
+          console.log(`Requesting retrieval of all the order`)
+        }
 
         // MySQL query execution
-        let orderList = conn.query(get_Orders_query, user_id, async function (err, rows) {
+        let orderList = conn.query(selectQuery, async function (err, rows) {
           if (err) {
             console.error('row: ' + rows)
             console.error(err)
@@ -126,30 +132,37 @@ class Service {
             let eachOrder = {}
             let eachItems = []
             let count = 0
-            for (var i in rows) {
-              console.log(rows[i])
-              if (orderList.includes(rows[i].insertId)) {
-                eachItems.push({ "itemID": rows[i].itemID, "qty": rows[i].qty })
-                eachOrder['items'] = eachItems
-              }
-              else {
-                console.log('b')
-                if (count > 0) {
-                  orderListObject.push(eachOrder)
-                }
-                eachOrder = {}
-                eachItems = []
-                orderList.push(rows[i].insertId)
-                eachOrder['OrderID'] = rows[i].insertId
-                eachOrder['amount'] = rows[i].amount
-                eachItems.push({ "itemID": rows[i].itemID, "qty": rows[i].qty })
-                eachOrder['items'] = eachItems
-                count++;
-              }
-            }
-            orderListObject.push(eachOrder)
-            console.log(`responseObj in service class`, orderListObject)
-            resolve(orderListObject)
+
+            resolve(rows)
+
+            // if (rows === undefined || rows.length == 0) {
+            //   resolve(orderListObject)
+            // }
+
+            // for (var i in rows) {
+            //   console.log(rows[i])
+            //   if (orderList.includes(rows[i].insertId)) {
+            //     eachItems.push({ "itemID": rows[i].itemID, "qty": rows[i].qty })
+            //     eachOrder['items'] = eachItems
+            //   }
+            //   else {
+            //     console.log('b')
+            //     if (count > 0) {
+            //       orderListObject.push(eachOrder)
+            //     }
+            //     eachOrder = {}
+            //     eachItems = []
+            //     orderList.push(rows[i].insertId)
+            //     eachOrder['OrderID'] = rows[i].insertId
+            //     eachOrder['amount'] = rows[i].amount
+            //     eachItems.push({ "itemID": rows[i].itemID, "qty": rows[i].qty })
+            //     eachOrder['items'] = eachItems
+            //     count++;
+            //   }
+            // }
+            // orderListObject.push(eachOrder)
+            // console.log(`responseObj in service class`, orderListObject)
+            // resolve(orderListObject)
           }
         })
       }

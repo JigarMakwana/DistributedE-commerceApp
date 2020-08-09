@@ -6,7 +6,8 @@ const routes = (app) => {
 
     app.route('/')
         .get(async (request, response) => {
-            response.render('list')
+            var controller = new Controller()
+            controller.getOrders(request, response)
         })
 
     app.route('/add')
