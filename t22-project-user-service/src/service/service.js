@@ -97,6 +97,34 @@ class Service {
         })
     }
 
+    async getOrderHistory(userId) {
+        let orderURL =  `http://localhost:8080/getOrders?user_id=${userId}`;
+        return new Promise(function (resolve, reject) {
+            try {
+                axios.get(orderURL, {
+                    headers: {
+                        Accept: 'application/json'
+                    }
+                })
+                    .then(response => {
+                        console.log("In getOrderHistory: " + response.data);
+                        resolve(response.data)
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        let err_response = {
+                            error: error
+                        };
+                        reject(err_response)
+                    });
+            }
+            catch (e) {
+                console.error(e)
+                throw Error(e)
+            }
+        })
+    }
+
      // Get all items API call
     // Service method for getting all items from the Inventory
     // async getAllItems() {

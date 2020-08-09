@@ -17,8 +17,8 @@ class Controller {
     constructor() {
     }
 
-     // Get all item
-     async getItemsList(request, response) {
+    // Get all item
+    async getItemsList(request, response) {
 
         try {
             let itemService = new Service()
@@ -36,8 +36,8 @@ class Controller {
         }
     }
 
-      // Get user wallet balance
-      async getWalletBalance(request, response) {
+    // Get user wallet balance
+    async getWalletBalance(request, response) {
         try {
             console.log('In myWallet route Cookies: ', request.cookies.email)
             let email = request.cookies.email
@@ -59,10 +59,7 @@ class Controller {
     async buy(request, response) {
         try {
             console.log('In myWallet route Cookies: ', request.cookies.email)
-            let email = request.cookies.email
-            // Get User Id
-            let userService = new UserService();
-            let userId = await userService.getUserByEmail(email)
+            let userId = request.cookies.userId;
             console.log("This i body " + JSON.stringify(request.body))
 
             console.log("In Buy " + userId)
@@ -80,6 +77,22 @@ class Controller {
             // let responseObj = await itemService.buy(data)
             // console.log(`responseObj from service:`, responseObj)
             response.render('placeOrderSuccess', { success: email });
+        } catch (e) {
+            console.error(e)
+            response.render('error', { error: e.error });
+        }
+    }
+
+    // Get order history
+    async getOrderHistory(request, response) {
+        try {
+            console.log('In myWallet route Cookies: ', request.cookies.userId)
+            let userId = request.cookies.userId;
+            let orderService = new Service()
+            let responseObj = await orderService.getOrderHistory(userId)
+            console.log(`responseObj from service:`, responseObj)
+            response.render('orderHistory', { jobs: responseObj });
+
         } catch (e) {
             console.error(e)
             response.render('error', { error: e.error });

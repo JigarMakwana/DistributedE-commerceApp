@@ -68,6 +68,12 @@ const routes = (app) => {
             userController.logoutUser(request, response)
         })
 
+    app.route('/orderHistory')
+        .get(async (request, response) => {
+            var controller = new Controller();
+            controller.getOrderHistory(request, response)
+        });
+
     app.route('/searchJob')
         .get((request, response) => {
             response.render('getJob')
