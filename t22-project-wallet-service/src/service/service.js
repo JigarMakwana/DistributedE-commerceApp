@@ -1,4 +1,6 @@
-const mysqlConnection  = require('../connection/db-connection.js')
+const mysqlConnection = require('../connection/db-connection.js')
+
+let tempTransactionId = null
 
 // Service class for handling user operation
 class Service {
@@ -52,10 +54,10 @@ class Service {
         })
     }
 
-    async editPart(id, quantity) {
+    async updateWallet(id, quantity) {
         return new Promise(function (resolve, reject) {
             try {
-                let updateQuery = 'UPDATE Parts SET qoh=? WHERE partId=?';
+                let updateQuery = 'UPDATE wallet SET amount=? WHERE userId=?';
                 mysqlConnection.query(updateQuery, [quantity, id], async function (err, rows) {
                     if (err) {
                         console.error('row: ' + rows);
@@ -78,43 +80,17 @@ class Service {
         })
     }
 
-    async deletePart(id) {
+    async getWallet(userId) {
         return new Promise(function (resolve, reject) {
             try {
-                let updateQuery = 'DELETE FROM Parts WHERE partId=?';
-                mysqlConnection.query(updateQuery, [id], async function (err, rows) {
-                    if (err) {
-                        console.error('row: ' + rows);
-                        console.error(err);
-                        let err_response = {
-                            error: `No record exist`,
-                            messsage: err.sqlMessage
-                        };
-                        reject(err_response)
-                    } else {
-                        console.log(`responseObj in edit service`, rows)
-                        resolve(rows)
-                    }
-                })
-            }
-            catch (e) {
-                console.error(e)
-                throw Error(e)
-            }
-        })
-    }
-
-    async getPartsByID(id) {
-        return new Promise(function (resolve, reject) {
-            try {
-                if (id != undefined) {
-                    var selectQuery = 'SELECT * FROM Parts WHERE partId=' + id;
+                if (userId != undefined) {
+                    var selectQuery = 'SELECT * FROM wallet WHERE userId=' + userId;
                 }
                 else {
-                    var selectQuery = 'SELECT * FROM Parts';
+                    var selectQuery = 'SELECT * FROM wallet';
                 }
 
-                let partRecords = mysqlConnection.query(selectQuery, async function (err, rows) {
+                let walletRecords = mysqlConnection.query(selectQuery, async function (err, rows) {
                     if (err) {
                         console.error('row: ' + rows);
                         console.error(err);
@@ -136,23 +112,22 @@ class Service {
         })
     }
 
-    // Service method for getting multiple parts from the partIdList
-    async getPartsForJobs(partIdList) {
+    async commitWalletTransaction(globalTransactionId) {
         return new Promise(function (resolve, reject) {
             try {
-                var selectQuery = 'SELECT * FROM Parts WHERE partId IN (' + partIdList + ')';
 
-                let partRecords = mysqlConnection.query(selectQuery, async function (err, rows) {
+                let updateQuery = 'XA COMMIT ?'
+                mysqlConnection.query(updateQuery, [globalTransactionId], async function (err, rows) {
                     if (err) {
                         console.error('row: ' + rows);
                         console.error(err);
                         let err_response = {
-                            error: `No record exist`,
+                            error: `Error in committing the transaction`,
                             messsage: err.sqlMessage
                         };
                         reject(err_response)
                     } else {
-                        console.log(`responseObj in edit service`, rows)
+                        console.log(`responseObj in commit deduct wallet amount service`, rows)
                         resolve(rows)
                     }
                 })
@@ -164,44 +139,23 @@ class Service {
         })
     }
 
-    async createPartOrder(partOrder) {
-
+    async rollbackWalletTransaction(globalTransactionId) {
         return new Promise(function (resolve, reject) {
-
             try {
-                let newPartOrder = {
-                    partId: partOrder.partId,
-                    jobName: partOrder.jobName,
-                    userId: partOrder.userId,
-                    qty: partOrder.qty
-                }
 
-                console.log(`Requesting creation of the PartOrder: ${newPartOrder.partId}`)
-
-                // MySQL DB query
-                let insertQuery = 'INSERT INTO PartOrdersY SET ?';
-
-                // MySQL query execution
-                mysqlConnection.query(insertQuery, newPartOrder, async function (err, rows) {
+                let updateQuery = 'XA ROLLBACK ?'
+                mysqlConnection.query(updateQuery, [globalTransactionId], async function (err, rows) {
                     if (err) {
-                        console.error('row: ' + rows)
-                        console.error(err)
+                        console.error('row: ' + rows);
+                        console.error(err);
                         let err_response = {
-                            error: `PartId : ${newPartOrder.partId}, JobName: ${newPartOrder.jobName}, userId: ${newPartOrder.userId} already exists. Please try with new Part Id, jobName, and UserId.`,
+                            error: `Error in committing the transaction`,
                             messsage: err.sqlMessage
                         };
-
                         reject(err_response)
                     } else {
-                        console.log(`PartOrder with PartId : ${newPartOrder.partId}, JobName: ${newPartOrder.jobName}, userId: ${newPartOrder.userId} is created successfully.`)
-
-                        let responseObj = {
-                            info: `PartOrder with PartId : ${newPartOrder.partId}, JobName: ${newPartOrder.jobName}, userId: ${newPartOrder.userId}  is created successfully.`,
-                            data: newPartOrder
-                        };
-
-                        console.log(`responseObj in create service class`, responseObj)
-                        resolve(responseObj)
+                        console.log(`responseObj in rollback deduct wallet amount service`, rows)
+                        resolve(rows)
                     }
                 })
             }
@@ -212,29 +166,85 @@ class Service {
         })
     }
 
-    async getSuccesfulJobPartOrderList() {
-
+    async deductAmountFromWallet(userId, amount, globalTransactionId) {
         return new Promise(function (resolve, reject) {
             try {
-                // MySQL DB query
-                let getQuery = 'select * from PartOrdersY order by jobName, userId, partId';
 
-                // MySQL query execution
-                let jobsList=  mysqlConnection.query(getQuery, async function (err, rows) {
+                console.log(`temp transactionId: ${globalTransactionId}`)
+
+
+                let startTransaction = 'XA start ?'
+
+                mysqlConnection.query(startTransaction, [globalTransactionId], async function (err, rows) {
                     if (err) {
-                        console.error('row: ' + rows)
-                        console.error(err)
+                        console.error('row: ' + rows);
+                        console.error(err);
                         let err_response = {
-                            error: `No record exist`,
+                            error: `Error in starting the transaction`,
                             messsage: err.sqlMessage
                         };
-
                         reject(err_response)
                     } else {
-                        console.log(rows);
-                        console.log(`responseObj in service class`, rows)
-                        resolve(rows)
+                        console.log(`responseObj in startTransaction`, rows)
+
+                        let updateQuery = 'UPDATE wallet SET amount=amount-? WHERE userId=?';
+
+                        mysqlConnection.query(updateQuery, [amount, userId], async function (err, rows) {
+                            if (err) {
+                                console.error('row: ' + rows);
+                                console.error(err);
+                                let err_response = {
+                                    error: `Error in starting the transaction`,
+                                    messsage: err.sqlMessage
+                                };
+                                reject(err_response)
+                            } else {
+                                console.log(`responseObj in updateQuery`, rows)
+
+
+                                let endTransactionQuery = 'XA END ?'
+                                mysqlConnection.query(endTransactionQuery, [globalTransactionId], async function (err, rows) {
+                                    if (err) {
+                                        console.error('row: ' + rows);
+                                        console.error(err);
+                                        let err_response = {
+                                            error: `No record exist`,
+                                            messsage: err.sqlMessage
+                                        };
+                                        reject(err_response)
+                                    } else {
+                                        console.log(`responseObj in endTransactionQuery`, rows)
+
+
+                                        let prepareTransactionQuery = 'XA PREPARE ?'
+                                        mysqlConnection.query(prepareTransactionQuery, [globalTransactionId], async function (err, rows) {
+                                            if (err) {
+                                                console.error('row: ' + rows);
+                                                console.error(err);
+                                                let err_response = {
+                                                    error: `No record exist`,
+                                                    messsage: err.sqlMessage
+                                                };
+                                                reject(err_response)
+                                            } else {
+                                                console.log(`deduct wallet prepareTransactionQuery success`, rows)
+
+                                                resolve(rows)
+                                            }
+
+                                            //   resolve(rows)
+
+                                        })
+                                    }
+                                    // resolve(rows)
+                                })
+
+                                // resolve(rows)
+                            }
+                        })
+
                     }
+
                 })
             }
             catch (e) {
@@ -245,4 +255,4 @@ class Service {
     }
 
 }
-module.exports =  Service
+module.exports = Service

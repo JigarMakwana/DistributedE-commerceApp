@@ -14,8 +14,8 @@
         <div>
             <% if (locals.error) { %>
             <div class="alert-failure"><%= error %></div>
-            <form action="<%= process.env.awsLambdaPath %>/parts/add" method="GET">
-                <input type="submit" value="Add New Parts">
+            <form action="<%= process.env.awsLambdaPath %>/wallet/add" method="GET">
+                <input type="submit" value="Add user wallet">
             </form>
 
             <% } %>

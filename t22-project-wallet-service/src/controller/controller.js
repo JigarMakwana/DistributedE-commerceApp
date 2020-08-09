@@ -23,11 +23,28 @@ const partOrderSchema = joi.object().keys({
     qty: joi.number().positive().required(),
 });
 
-// Controller class for handling user operation
-class Controller {
+// Controller class for handling user wallet operation
+class WalletController {
 
 
     constructor() {
+    }
+
+    async getUserWalletData(request, response) {
+        try {
+            let partService = new Service()
+            let responseObj = await partService.getWallet(request.query.userId);
+
+            if (request.header('Accept').includes('application/json')) {
+                response.send(responseObj);
+            } else {
+                response.render('list', { wallet: responseObj });
+            }
+
+        } catch (e) {
+            console.error(e);
+            response.render('error', { error: e.error });
+        }
     }
 
     async addUserWallet(request, response) {
@@ -54,8 +71,14 @@ class Controller {
 
             let walletService = new Service()
             let responseObj = await walletService.createUserWallet(userWallet);
-            var message = responseObj.info + 'Please click on below button to add more user wallet.'
-            response.render('success', { success: message });
+
+            if (request.header('Accept').includes('application/json')) {
+                response.send(responseObj);
+            }
+            else {
+                var message = responseObj.info + 'Please click on below button to add more user wallet.'
+                response.render('success', { success: message });
+            }
 
         } catch (e) {
             console.error(e);
@@ -63,9 +86,9 @@ class Controller {
         }
     }
 
-    async editProcess(request, response) {
+    async editWallet(request, response) {
         try {
-            response.render('edit', { partId: request.body.partId });
+            response.render('edit', { userId: request.body.userId });
         } catch (e) {
             console.error(e);
             response.render('error', { error: e.error });
@@ -74,112 +97,50 @@ class Controller {
 
     async edit(request, response) {
         try {
-            let responseObj = await global.partService.editPart(request.body.partId, request.body.quantity);
-            return response.redirect(awsLambdaPath + '/parts');
+            let walletService = new Service()
+            let responseObj = await walletService.updateWallet(request.body.userId, request.body.amount);
+            return response.redirect(awsLambdaPath + '/wallet');
         } catch (e) {
             console.error(e);
             response.render('error', { error: e.error });
         }
     }
 
-    async delete(request, response) {
+
+    async deductAmount(request, response) {
         try {
-            let responseObj = await global.partService.deletePart(request.body.partId);
-            return response.redirect('/parts');
+            let walletService = new Service()
+            let responseObj = await walletService.deductAmountFromWallet(request.body.userId, request.body.amount, request.body.globalTransactionId);
+            response.send(responseObj);
         } catch (e) {
             console.error(e);
-            response.render('error', { error: e.error });
+            response.status(500).send('error', { error: e.error });
         }
     }
 
-    async getUserWalletData(request, response) {
+
+    async commitDeductAmount(request, response) {
         try {
-            let partService = new Service()
-            let responseObj = await partService.getPartsByID(request.query.partId);
-
-            if (request.header('Accept').includes('application/json')) {
-                response.send(responseObj);
-            } else {
-                response.render('list', { parts: responseObj });
-            }
-
+            let walletService = new Service()
+            let responseObj = await walletService.commitWalletTransaction(request.body.globalTransactionId);
+            response.send(responseObj);
         } catch (e) {
             console.error(e);
-            response.render('error', { error: e.error });
+            response.status(500).send('error', { error: e.error });
         }
     }
 
-    async getPartList(request, response) {
+    async rollbackDeductAmount(request, response) {
         try {
-
-            let partIdList = request.body.partIdList
-
-            if (partIdList === undefined || partIdList.length == 0) {
-                let message = `partIdList cannot be empty`
-                console.error(message)
-                response.status(404).send({
-                    message: message
-                });
-            }
-            let partService = new Service()
-            let responseObj = await partService.getPartsForJobs(request.body.partIdList);
-            response.status(200).send(responseObj);
+            let walletService = new Service()
+            let responseObj = await walletService.rollbackWalletTransaction(request.body.globalTransactionId);
+            response.send(responseObj);
         } catch (e) {
             console.error(e);
-            response.status(500).send(e);
+            response.status(500).send('error', { error: e.error });
         }
     }
 
-    async addPartOrders(request, response) {
-        try {
-
-            // validating the partOrder body against the partOrderSchema
-            joi.validate(request.body, partOrderSchema, async (err, value) => {
-                //If schema validation fails, send error response
-                if (err) {
-                    console.log(err)
-                    var message = err;
-                    response.status(500).send({ error: message });
-                }
-            })
-
-            let partOrder = {
-                partId: request.body.partId,
-                jobName: request.body.jobName,
-                userId: request.body.userId,
-                qty: request.body.qty
-            }
-
-            console.log(`Requesting service method for creation of the partOrder: ${partOrder.partId}, ${partOrder.jobName}, ${partOrder.userId}`)
-
-            let responseObj = await global.partService.createPartOrder(partOrder);
-            var message = responseObj.info
-
-            response.status(200).send({ success: message });
-
-        } catch (e) {
-            console.error(e);
-            response.status(500).send({ error: e.error });
-        }
-    }
-
-    async getSuccesfulJobPartOrderList(request, response) {
-
-        try {
-
-            let responseObj = await global.partService.getSuccesfulJobPartOrderList()
-
-            console.log(`responseObj from service:`, responseObj)
-
-            if (request.header('Accept').includes('application/json')) {
-                response.send(responseObj);
-            }
-            response.render('successfulOrderList', { jobs: responseObj });
-        } catch (e) {
-            console.error(e)
-            response.render('error', { error: e.error });
-        }
-    }
 
 }
-module.exports = Controller
+module.exports = WalletController

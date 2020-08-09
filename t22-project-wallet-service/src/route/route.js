@@ -1,58 +1,51 @@
-const Controller  = require('../controller/controller.js')
-const joi  = require('joi')
+const WalletController = require('../controller/controller.js')
+const joi = require('joi')
 
 const routes = (app) => {
 
     app.route('/').get((request, response) => {
-        var controller = new Controller();
+        var controller = new WalletController();
         controller.getUserWalletData(request, response);
     });
 
-    app.route('/parts').get((request, response) => {
-        var controller = new Controller();
+    app.route('/wallet').get((request, response) => {
+        var controller = new WalletController();
         controller.getUserWalletData(request, response);
     });
 
-    app.route('/api/parts/getPartList')
-    .post((request, response) => {
-        var controller = new Controller();
-        controller.getPartList(request, response);
-    });
-
-
-    app.route('/parts/add').get((request, response) => {
+    app.route('/wallet/add').get((request, response) => {
         response.render('add');
     });
 
-    app.route('/parts/add').post(async (request, response) => {
-        var controller = new Controller();
+    app.route('/wallet/add').post(async (request, response) => {
+        var controller = new WalletController();
         controller.addUserWallet(request, response);
     });
 
-    app.route('/parts/editProcess').post(async (request, response) => {
-      var controller = new Controller();
-      controller.editProcess(request, response);
+    app.route('/wallet/addMoney').post(async (request, response) => {
+        var controller = new WalletController();
+        controller.editWallet(request, response);
     });
 
-    app.route('/parts/edit').post(async (request, response) => {
-        var controller = new Controller();
+    app.route('/wallet/edit').post(async (request, response) => {
+        var controller = new WalletController();
         controller.edit(request, response);
     });
 
-    app.route('/parts/delete').post(async (request, response) => {
-        var controller = new Controller();
-        controller.delete(request, response);
+    app.route('/wallet/deductAmount').post(async (request, response) => {
+        var controller = new WalletController();
+        controller.deductAmount(request, response)
     });
 
-    app.route('/api/addPartOrders').post(async (request, response) => {
-        var controller = new Controller();
-        controller.addPartOrders(request, response);
+    app.route('/wallet/commitDeductAmount').post(async (request, response) => {
+        var controller = new WalletController();
+        controller.commitDeductAmount(request, response)
     });
-    
-    app.route('/getSuccessfulJobList')
-    .get((request, response) => {
-        const controller = new Controller()
-        controller.getSuccesfulJobPartOrderList(request, response)
-    })
+
+    app.route('/wallet/rollbackDeductAmount').post(async (request, response) => {
+        var controller = new WalletController();
+        controller.rollbackDeductAmount(request, response)
+    });
+
 }
 module.exports = routes
