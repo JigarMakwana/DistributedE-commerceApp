@@ -81,6 +81,11 @@ class WalletController {
             }
 
         } catch (e) {
+
+            if (request.header('Accept').includes('application/json')) {
+                response.status(500).send({ error: e.error });
+            }
+
             console.error(e);
             response.render('error', { error: e.error });
         }
@@ -110,11 +115,22 @@ class WalletController {
     async deductAmount(request, response) {
         try {
             let walletService = new Service()
-            let responseObj = await walletService.deductAmountFromWallet(request.body.userId, request.body.amount, request.body.globalTransactionId);
-            response.send(responseObj);
+
+
+            let isUserWalletSufficient = await walletService.checkWalletBalanceForEligibility(request.body.userId, request.body.amount)
+
+            if(isUserWalletSufficient){
+                let responseObj = await walletService.deductAmountFromWallet(request.body.userId, request.body.amount, request.body.globalTransactionId);
+                response.send(responseObj);
+            }
+            else{
+
+            }
+
+
         } catch (e) {
             console.error(e);
-            response.status(500).send('error', { error: e.error });
+            response.status(500).send(e);
         }
     }
 
