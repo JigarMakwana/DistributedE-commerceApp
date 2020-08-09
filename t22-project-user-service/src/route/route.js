@@ -38,6 +38,12 @@ const routes = (app) => {
             controller.getItemsList(request, response)
         })
 
+        app.route('/myWallet')
+        .get((request, response) => {
+            var controller = new Controller()
+            controller.getWalletBalance(request, response)
+        })
+
     app.route('/login')
         .post(async (request, response) => {
             let userController = new UserController()

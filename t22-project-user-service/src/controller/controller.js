@@ -2,7 +2,7 @@ const joi = require('joi')
 const Service = require('../service/service.js')
 const UserService = require('../service/userService.js')
 const UserController = require('../controller/userController.js')
-
+const Cookies = require('js-cookie')
 // Schema
 const getJobSchema = joi.object().keys({
 
@@ -29,6 +29,26 @@ class Controller {
             //   console.log(`unique job:`, uniqueJob)
 
             response.render('list', { items: responseObj });
+
+        } catch (e) {
+            console.error(e)
+            response.render('error', { error: e.error });
+        }
+    }
+
+      // Get all item
+      async getWalletBalance(request, response) {
+        try {
+          console.log("user email"+ Cookies.get("email"));
+          console.log('Cookies in items: ', request.cookie);
+            let itemService = new Service()
+            let responseObj = await itemService.getWalletBalance()
+            console.log(`responseObj from service:`, responseObj)
+
+            //   const uniqueJob = [...new Map(responseObj.map(item => [item['jobName'], item])).values()]
+            //   console.log(`unique job:`, uniqueJob)
+
+            response.render('myWallet', { amount: responseObj });
 
         } catch (e) {
             console.error(e)

@@ -41,6 +41,37 @@ class Service {
         })
     }
 
+    async getWalletBalance() {
+        let getwalletUrl =  "http://localhost:8080/wallet?userId=2";
+
+            // getInventoryUrl = getInventoryUrl + '/'
+
+        return new Promise(function (resolve, reject) {
+            try {
+                axios.get(getwalletUrl, {
+                    headers: {
+                        Accept: 'application/json'
+                    }
+                })
+                    .then(response => {
+                        console.log(response.data);
+                        resolve(response.data)
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        let err_response = {
+                            error: error
+                        };
+                        reject(err_response)
+                    });
+            }
+            catch (e) {
+                console.error(e)
+                throw Error(e)
+            }
+        })
+    }
+
      // Get all items API call
     // Service method for getting all items from the Inventory
     // async getAllItems() {
