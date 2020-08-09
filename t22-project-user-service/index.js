@@ -2,6 +2,7 @@ const express = require('express')
 const routes = require('./src/route/route.js')
 const bodyParser = require('body-parser')
 const dotenv = require('dotenv')
+const cookieParser = require('cookie-parser');
 dotenv.config()
 
 const app = express()
@@ -18,6 +19,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(express.static('public'));
+
+app.use(cookieParser());
 
 routes(app)
 

@@ -323,9 +323,7 @@ class LoginService {
     }
 
     async generateJWTToken(user) {
-
         return new Promise(function (resolve, reject) {
-
             try {
                 // generate JWT TokenSecret
                 const tokenSecret = user.password;
@@ -335,15 +333,12 @@ class LoginService {
                 const accessToken = jwt.sign({ username: user.email }, tokenSecret)
                 console.log('accessToken: ' + accessToken)
 
-
                 var res = {
                     'message': 'Login successfull! Please click on the button to continue.',
                     'user_id': user.email,
                     'token': accessToken
                 }
                 resolve(res)
-
-
             } catch (e) {
                 console.error(`Error in generating the user token`)
                 console.error(e)

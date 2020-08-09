@@ -56,16 +56,19 @@
 <body>
 <%- include("headerLoggedIn");-%>
     <div class="registration-form">
-        <h1 class="display-4">Here is your available wallet balance</h1>
+        <h1 class="display-4">Hello,
+            <% amount.forEach(function(j){ %>
+                <%= j.name %>
+            <% }) %></h1>
+                <br>
     <form method="post" action="placeOrder" >
-            <div class="form-group">
-                <label for="title">Amount:</label>
+            <div class="form-group" align="center">
+                <label for="title">Your available Wallet Balance is:</label>
                 <br />
-                
-                    <% amount.forEach(function(j){ %>>
-                  <%= j.amount %>
-                    <% }) %>                
-            </div>                 
+                    <% amount.forEach(function(j){ %>
+                    <%= j.amount %>
+                    <% }) %> $
+            </div>
         </form>
     </div>
     <script>

@@ -39,15 +39,14 @@ class Controller {
       // Get all item
       async getWalletBalance(request, response) {
         try {
-          console.log("user email"+ Cookies.get("email"));
-          console.log('Cookies in items: ', request.cookie);
+            console.log('In myWallet route Cookies: ', request.cookies.email)
+            let email = request.cookies.email
+            // Get User Id
+            let userService = new UserService();
+            let userId = await userService.getUserByEmail(email)
             let itemService = new Service()
-            let responseObj = await itemService.getWalletBalance()
+            let responseObj = await itemService.getWalletBalance(userId)
             console.log(`responseObj from service:`, responseObj)
-
-            //   const uniqueJob = [...new Map(responseObj.map(item => [item['jobName'], item])).values()]
-            //   console.log(`unique job:`, uniqueJob)
-
             response.render('myWallet', { amount: responseObj });
 
         } catch (e) {

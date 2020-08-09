@@ -2,7 +2,6 @@ const joi = require('joi')
 const UserService = require('../service/userService.js')
 const Service = require('../service/service.js')
 const jwt = require('jsonwebtoken')
-const Cookies = require('js-cookie')
 
 // Schema for user login
 const userLoginSchema = joi.object().keys({
@@ -98,20 +97,21 @@ class UserController {
             }
 
             // Step - 3
-            // generate and manage the stored session
-            Cookies.set("email", userObj.email);
-            Cookies.set("name", userObj.name);
+            // store the user data in cookies
+            response.clearCookie('email');
+            response.cookie('email', userObj.email)
+            console.log('In validate user Cookies: ', request.cookies);
+
             let userSession = await userService.generateJWTToken(userDBObj)
 
             if (userSession) {
                 console.log(`User: ${request.body.email} has been authenticated successfully. Redirecting the user.`)
-                console.log(userSession)
+                console.log("This is userSession: " + userSession)
 
                 // adding the JWT token in the cookie
                 response.cookie('token', userSession.token, {
                     maxAge: 5*60*1000, // Lifetime
                 })
-
 
                 let itemService = new Service()
                 let responseObj = await itemService.getAllItems()
@@ -246,8 +246,8 @@ class UserController {
     }
 
     async logoutUser(request, response) {
-        Cookies.remove("email");
-        Cookies.remove("name");
+        console.log('In logoutUser Cookies: ', request.cookies);
+        response.clearCookie('email');
         response.render('login', { success: `User has been logged out successfully.` });
 
         // try {

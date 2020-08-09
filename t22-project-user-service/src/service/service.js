@@ -41,11 +41,8 @@ class Service {
         })
     }
 
-    async getWalletBalance() {
-        let getwalletUrl =  "http://localhost:8080/wallet?userId=18";
-
-            // getInventoryUrl = getInventoryUrl + '/'
-
+    async getWalletBalance(userId) {
+        let getwalletUrl =  `http://localhost:8080/wallet?userId=${userId}`;
         return new Promise(function (resolve, reject) {
             try {
                 axios.get(getwalletUrl, {
