@@ -96,17 +96,22 @@ class UserController {
                 throw Error(`Invalid Security Answer for: ${userObj.email}`)
             }
 
+            // Get userId
+            let userId = await userService.getUserByEmail(userObj.email)
+
             // Step - 3
             // store the user data in cookies
             response.clearCookie('email');
-            response.cookie('email', userObj.email)
+            response.clearCookie('userId');
+            response.cookie('email', userObj.email);
+            response.cookie('userId', userId);
             console.log('In validate user Cookies: ', request.cookies);
 
             let userSession = await userService.generateJWTToken(userDBObj)
 
             if (userSession) {
                 console.log(`User: ${request.body.email} has been authenticated successfully. Redirecting the user.`)
-                console.log("This is userSession: " + userSession)
+                // console.log("This is userSession: " + userSession)
 
                 // adding the JWT token in the cookie
                 response.cookie('token', userSession.token, {
@@ -248,6 +253,7 @@ class UserController {
     async logoutUser(request, response) {
         console.log('In logoutUser Cookies: ', request.cookies);
         response.clearCookie('email');
+        response.clearCookie('userId');
         response.render('login', { success: `User has been logged out successfully.` });
 
         // try {
