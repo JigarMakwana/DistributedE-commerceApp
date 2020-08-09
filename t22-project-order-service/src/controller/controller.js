@@ -16,10 +16,6 @@ class Controller {
         let transactionService = new TransactionService();
         let transactionResponse = await transactionService.createTransaction(orderServiceResponse.data.orderID);
 
-        if (transactionResponse != undefined) {
-
-        }
-
         console.log(`transactionResponse:`, transactionResponse)
         response.json(orderServiceResponse);
       } else {
