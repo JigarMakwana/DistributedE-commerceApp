@@ -10,7 +10,7 @@
 </head>
 <style>
   .table {
-    width: 70% !important
+    width: 75% !important
   }
 
   .display-4 {
@@ -29,6 +29,7 @@
     <table class="table cart  table-striped table-hover mx-auto w-auto">
       <thead>
         <tr>
+          <th class="cart-product-name">Product Id</th>
           <th class="cart-product-name">Product</th>
           <th class="cart-product-price">Available Quantity</th>
           <th class="cart-product-price">Unit Price</th>
@@ -40,16 +41,19 @@
       <tbody>
         <% items.forEach(function(j){ %>
         <tr>
-          <td class="cart-product-name">
+          <td id="itemId" name="itemId" class="cart-product-name">
+            <%= j.itemId %>
+          </td>
+          <td id="item" name="item" class="cart-product-name">
             <%= j.itemName %>
           </td>
 
           <td>
-            <span><%= j.qty %></span>
+            <span id="qty" name="qty"><%= j.qty %></span>
           </td>
 
           <td class="cart-product-price">
-            <span id="price" class="amount"><%= j.price %></span>
+            <span id="price" name="price" class="amount"><%= j.price %></span>
           </td>
 
           <td class="cart-product-quantity">
@@ -61,13 +65,13 @@
           </td>
 
           <td class="cart-product-subtotal">
-            <span id="total" class="total_amount">0</span>
+            <span id="total" name="total" class="total_amount">0</span>
           </td>
           <td>
-            <form class="d-inline" action="/viewJob" method="post">
+            <form class="d-inline" action="/buy" method="POST">
               <input type="hidden" name="items" value="<%= JSON.stringify(items) %>">
               <input type="hidden" name="itemId" value="<%= j.itemId%>">
-              <input type="submit" value="Buy" class="btn btn-primary">
+                <input type="submit" class="btn btn-primary" value="Buy">
             </form>
           </td>
         </tr>

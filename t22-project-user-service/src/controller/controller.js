@@ -36,7 +36,7 @@ class Controller {
         }
     }
 
-      // Get all item
+      // Get user wallet balance
       async getWalletBalance(request, response) {
         try {
             console.log('In myWallet route Cookies: ', request.cookies.email)
@@ -49,6 +49,37 @@ class Controller {
             console.log(`responseObj from service:`, responseObj)
             response.render('myWallet', { amount: responseObj });
 
+        } catch (e) {
+            console.error(e)
+            response.render('error', { error: e.error });
+        }
+    }
+
+    // Post order details
+    async buy(request, response) {
+        try {
+            console.log('In myWallet route Cookies: ', request.cookies.email)
+            let email = request.cookies.email
+            // Get User Id
+            let userService = new UserService();
+            let userId = await userService.getUserByEmail(email)
+            console.log("This i body " + JSON.stringify(request.body))
+
+            console.log("In Buy " + userId)
+            console.log(request.body.total)
+            console.log(request.body.itemId)
+            console.log(request.body.quantity)
+            console.log(request.body.itemName)
+
+            let data = {
+                userID : userId,
+                amount : request.body.total,
+                items:[{itemID : request.body.itemId, qty : request.body.quantity, name: request.body.item}]
+            }
+            // let itemService = new Service()
+            // let responseObj = await itemService.buy(data)
+            // console.log(`responseObj from service:`, responseObj)
+            response.render('placeOrderSuccess', { success: email });
         } catch (e) {
             console.error(e)
             response.render('error', { error: e.error });

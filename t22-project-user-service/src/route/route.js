@@ -38,7 +38,13 @@ const routes = (app) => {
             controller.getItemsList(request, response)
         })
 
-        app.route('/myWallet')
+    app.route('/buy')
+        .post((request, response) => {
+            var controller = new Controller()
+            controller.buy(request, response)
+        })
+
+    app.route('/myWallet')
         .get((request, response) => {
             var controller = new Controller()
             controller.getWalletBalance(request, response)
