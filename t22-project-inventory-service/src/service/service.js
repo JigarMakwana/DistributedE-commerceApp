@@ -12,7 +12,8 @@ class Service {
             try {
                 let newItem = {
                     itemName: item.itemName,
-                    qty: item.qty
+                    qty: item.qty,
+                    price: item.price
                 }
 
                 console.log(`Requesting creation of the user: ${newItem.itemName}`)
@@ -54,21 +55,28 @@ class Service {
         })
     }
 
-    async updateItem(itemId, itemName, quantity) {
+    async updateItem(itemId, itemName, quantity, price) {
         
         return new Promise(function (resolve, reject) {
             let qty = Number.parseInt(quantity);
+            price = Number.parseInt(price);
             if (Number.isNaN(qty)) {
                 console.log('Quantity is not number');
                 let err_response = {
                     error: `Quantity must be a number`,
                 }
                 reject(err_response)
+            }else if(Number.isNaN(price)){
+                console.log('Price is not number');
+                let err_response = {
+                    error: `Price must be a number`,
+                }
+                reject(err_response)
             } else {
                 try {
-                    console.log(itemName, itemId, qty);
-                    let updateQuery = 'UPDATE items SET qty=? WHERE itemId=? AND itemName=?';
-                    mysqlConnection.query(updateQuery, [qty, itemId, itemName], async function (err, rows) {
+                    console.log(itemName, itemId, qty, price);
+                    let updateQuery = 'UPDATE items SET qty=?,price=? WHERE itemId=? AND itemName=?';
+                    mysqlConnection.query(updateQuery, [qty, price, itemId, itemName], async function (err, rows) {
                         if (err) {
                             console.error('row: ' + rows);
                             console.error(err);
