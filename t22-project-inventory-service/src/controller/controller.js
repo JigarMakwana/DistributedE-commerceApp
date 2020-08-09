@@ -166,6 +166,7 @@ class Controller {
         }
     }
 
+
     async prepareUpdateItemTransaction(request, response) {
 
         let transactionId = request.body.transactionId
@@ -173,6 +174,18 @@ class Controller {
         let quantity = request.body.quantity;
         console.log(transactionId, itemId, quantity);
         try {
+
+            let itemService = new Service()
+            let isItemQtySufficient = await itemService.checkItemQuantityForEligibility(request.body.itemId, request.body.quantity)
+            if(isItemQtySufficient===undefined || isItemQtySufficient.eligibility===false){
+                response.send({
+                    messsage: `Transaction cannot be prepared due to insufficient item quantity`,
+                    transactionId: transactionId,
+                    success: false
+                });
+                return
+            }
+            
             let responseObj = await global.itemService
                 .prepareUpdateItemTransaction(transactionId, itemId, quantity);
             console.log(responseObj);
