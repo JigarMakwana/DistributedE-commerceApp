@@ -17,6 +17,25 @@ class Controller {
     constructor() {
     }
 
+     // Get all item
+     async getItemsList(request, response) {
+
+        try {
+            let itemService = new Service()
+            let responseObj = await itemService.getAllItems()
+            console.log(`responseObj from service:`, responseObj)
+
+            //   const uniqueJob = [...new Map(responseObj.map(item => [item['jobName'], item])).values()]
+            //   console.log(`unique job:`, uniqueJob)
+
+            response.render('list', { items: responseObj });
+
+        } catch (e) {
+            console.error(e)
+            response.render('error', { error: e.error });
+        }
+    }
+
     // Get all jobs
     async getJobsList(request, response) {
 

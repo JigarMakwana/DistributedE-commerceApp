@@ -34,7 +34,8 @@ const routes = (app) => {
 
     app.route('/placeOrder')
         .get((request, response) => {
-            response.render('placeOrder')
+            var controller = new Controller()
+            controller.getItemsList(request, response)
         })
 
     app.route('/login')
