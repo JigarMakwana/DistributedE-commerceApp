@@ -41,6 +41,37 @@ class Service {
         })
     }
 
+    async getItemDetailsByID(itemId) {
+        let getInventoryUrl = `https://2o3pti1up3.execute-api.us-east-1.amazonaws.com/production/api/items/getItem?itemId=${itemId}`
+        console.log("url"+getInventoryUrl);
+            // getInventoryUrl = getInventoryUrl + '/'
+
+        return new Promise(function (resolve, reject) {
+            try {
+                axios.get(getInventoryUrl, {
+                    headers: {
+                        Accept: 'application/json'
+                    }
+                })
+                    .then(response => {
+                        console.log("service"+JSON.stringify(response.data));
+                        resolve(response.data)
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        let err_response = {
+                            error: error
+                        };
+                        reject(err_response)
+                    });
+            }
+            catch (e) {
+                console.error(e)
+                throw Error(e)
+            }
+        })
+    }
+
     async getWalletBalance(userId) {
         let getwalletUrl =  `http://localhost:8080/wallet?userId=${userId}`;
         return new Promise(function (resolve, reject) {
