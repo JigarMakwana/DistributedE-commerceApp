@@ -348,7 +348,7 @@ class Service {
 
 
     async checkItemQuantityForEligibility(itemId, qty) {
-        let awsLambdaItemQtyCheckUrl = process.env.awsLambdaWalletCheckSvc || 'https://b3kg6ipse1.execute-api.us-east-1.amazonaws.com/production'
+        let awsLambdaItemQtyCheckUrl = process.env.awsLambdaWalletCheckSvc || 'https://ujs1u1gw69.execute-api.us-east-1.amazonaws.com/production'
         awsLambdaItemQtyCheckUrl = awsLambdaItemQtyCheckUrl + '/api/item/checkItemQuantityForOrder/'
 
         let body = {
