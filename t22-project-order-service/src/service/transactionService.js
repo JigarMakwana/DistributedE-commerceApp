@@ -42,7 +42,7 @@ class TransactionService {
   }
 
   async triggerWalletTransaction(transactionObject) {
-    let walletServiceURL = process.env.walletSvc || 'http://localhost:9090'
+    let walletServiceURL = process.env.walletSvc || 'http://wallet-svc.us-east-1.elasticbeanstalk.com'
     walletServiceURL = walletServiceURL + '/wallet/deductAmount/'
 
     return new Promise(function (resolve, reject) {
