@@ -1,4 +1,4 @@
-service: user-wallet-check
+service: item-qty-check
 
 provider:
   name: aws
