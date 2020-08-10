@@ -177,35 +177,37 @@ class Controller {
 
             let itemService = new Service()
             let isItemQtySufficient = await itemService.checkItemQuantityForEligibility(request.body.itemId, request.body.quantity)
-            if(isItemQtySufficient===undefined || isItemQtySufficient.eligibility===false){
+            if(isItemQtySufficient!=undefined && isItemQtySufficient.eligibility){
+                let responseObj = await global.itemService.prepareUpdateItemTransaction(transactionId, itemId, quantity);
+                console.log(responseObj);
+                let resp = {}
+                if(responseObj.protocol41 === true){
+                    resp = {
+                        messsage: `Transaction prepared successfully`,
+                        transactionId: transactionId,
+                        success: true
+                    };
+                }
+                else{
+                    resp = {
+                        messsage: `Transaction preparation failed`,
+                        transactionId: transactionId,
+                        success: false
+                    };
+                }
+            
+                response.send(resp);
+            }
+            else{
                 response.send({
                     messsage: `Transaction cannot be prepared due to insufficient item quantity`,
                     transactionId: transactionId,
                     success: false
                 });
-                return
+                
             }
             
-            let responseObj = await global.itemService
-                .prepareUpdateItemTransaction(transactionId, itemId, quantity);
-            console.log(responseObj);
-            let resp = {}
-            if(responseObj.protocol41 === true){
-                resp = {
-                    messsage: `Transaction prepared successfully`,
-                    transactionId: transactionId,
-                    success: true
-                };
-            }
-            else{
-                resp = {
-                    messsage: `Transaction preparation failed`,
-                    transactionId: transactionId,
-                    success: false
-                };
-            }
             
-            response.send(resp);
         } catch (e) {
             console.error(e);
             response.status(500).send({
