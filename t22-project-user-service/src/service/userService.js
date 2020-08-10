@@ -236,7 +236,7 @@ class LoginService {
     }
 
     async createWallet(walletObj) {
-        let createWalletURL =  "http://localhost:8080/wallet/add";
+        let createWalletURL =  "http://wallet-svc.us-east-1.elasticbeanstalk.com/wallet/add";
         return new Promise(function (resolve, reject) {
             try {
                 axios.post(createWalletURL, walletObj, {

@@ -9,6 +9,6 @@ RUN npm install
 # Copy source code to image filesystem.
 COPY . .
 # Docker image port.
-EXPOSE 8088
+EXPOSE 8080
 # Command to run the application
 CMD ["npm", "start"]

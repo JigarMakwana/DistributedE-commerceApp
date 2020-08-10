@@ -50,11 +50,8 @@ class Controller {
     // Get user wallet balance
     async getWalletBalance(request, response) {
         try {
-            console.log('In myWallet route Cookies: ', request.cookies.email)
-            let email = request.cookies.email
-            // Get User Id
-            let userService = new UserService();
-            let userId = await userService.getUserByEmail(email)
+            console.log('In myWallet route Cookies: ', request.cookies.userId)
+            let userId = request.cookies.userId;
             let itemService = new Service()
             let responseObj = await itemService.getWalletBalance(userId)
             response.render('myWallet', { amount: responseObj });
@@ -83,10 +80,13 @@ class Controller {
             let itemService = new Service()
             let responseObj = await itemService.buy(data)
             console.log(`responseObj from service:`, responseObj)
-            response.render('placeOrderSuccess', { success: email });
+            response.render('placeOrderSuccess', { success: request.cookies.email });
         } catch (e) {
-            console.error(e)
-            response.render('error', { error: e.error });
+            console.error("this is in controller: " + e)
+            if(e === 500)
+            response.render('placeOrderFundError', { msg: request.cookies.email });
+            else
+                response.render('placeOrderError', { msg: request.cookies.email });
         }
     }
 

@@ -73,7 +73,8 @@ class Service {
     }
 
     async getWalletBalance(userId) {
-        let getwalletUrl =  `http://localhost:8080/wallet?userId=${userId}`;
+        let getwalletUrl =  `http://wallet-svc.us-east-1.elasticbeanstalk.com/wallet?userId=${userId}`;
+        console.log("This is wallet URL: "  + getwalletUrl)
         return new Promise(function (resolve, reject) {
             try {
                 axios.get(getwalletUrl, {
@@ -100,8 +101,8 @@ class Service {
         })
     }
 
-    async buy(data) {
-        let orderURL =  `http://localhost:8080/add`;
+    async buy(data)     {
+        let orderURL =  `https://cloud-order-svc-bcyssspw3a-ue.a.run.app/add`;
         return new Promise(function (resolve, reject) {
             try {
                 axios.post(orderURL, data, {
@@ -114,11 +115,11 @@ class Service {
                         resolve(response.data)
                     })
                     .catch(error => {
-                        console.log(error);
+                        console.log("This is in buy: " + error.response.status);
                         let err_response = {
                             error: error
                         };
-                        reject(err_response)
+                        reject(error.response.status)
                     });
             }
             catch (e) {
