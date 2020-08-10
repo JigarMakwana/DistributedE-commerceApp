@@ -22,12 +22,9 @@ class Controller {
         try {
             let itemService = new Service()
             let responseObj = await itemService.getAllItems()
-            //   const uniqueJob = [...new Map(responseObj.map(item => [item['jobName'], item])).values()]
-            //   console.log(`unique job:`, uniqueJob)
             response.render('placeOrder', { items: responseObj });
         } catch (e) {
-            console.error(e)
-            response.render('error', { error: e.error });
+            response.render('transactionLockError', { msg: request.cookies.email, error: e.error });
         }
     }
 
@@ -35,15 +32,9 @@ class Controller {
         try {
             let itemService = new Service()
             let responseObj = await itemService.getAllItems()
-
-            //   const uniqueJob = [...new Map(responseObj.map(item => [item['jobName'], item])).values()]
-            //   console.log(`unique job:`, uniqueJob)
-
             response.render('list', { items: responseObj });
-
         } catch (e) {
-            console.error(e)
-            response.render('error', { error: e.error });
+            response.render('transactionLockError', { msg: request.cookies.email, error: e.error });
         }
     }
 
@@ -58,7 +49,7 @@ class Controller {
 
         } catch (e) {
             console.error(e)
-            response.render('error', { error: e.error });
+            response.render('transactionLockError', { msg: request.cookies.email, error: e.error });
         }
     }
 
@@ -82,12 +73,9 @@ class Controller {
             console.log(`responseObj from service:`, responseObj)
             response.render('placeOrderSuccess', { success: request.cookies.email });
         } catch (e) {
-            response.render('error', { error: e.error });
-            // console.error("this is in controller: " + e)
-            // if(e === 500)
-            // response.render('placeOrderFundError', { msg: request.cookies.email });
-            // else
-            //     response.render('placeOrderError', { msg: request.cookies.email });
+            console.log("In buy controller: " + JSON.stringify(e))
+            console.log("error: " + e.error.error)
+            response.render('placeOrderError', { msg: request.cookies.email, error: e.error.error });
         }
     }
 
@@ -100,7 +88,6 @@ class Controller {
             let responseObj = await orderService.getOrderHistory(userId)
             console.log(`responseObj from service:`, responseObj)
             response.render('orderHistory', { jobs: responseObj });
-
         } catch (e) {
             console.error(e)
             response.render('error', { error: e.error });

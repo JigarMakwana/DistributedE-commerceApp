@@ -43,7 +43,6 @@ const userRegisterSchema = joi.object().keys({
 });
 // Controller class for handling user operation
 class UserController {
-
     constructor() {
     }
 
@@ -226,30 +225,6 @@ class UserController {
         }
     }
 
-    async isUserLoggedIn(request, response) {
-        try {
-
-            let userService = new UserService()
-            // generate and manage the stored session
-            let userSession = await userService.isUserLoggedIn(request, response)
-
-            if (userSession) {
-                return userSession
-            }
-            else {
-                let res = {
-                    'message': 'You are not authorized to view this page. Please login to proceed.'
-                }
-                response.render('error', { error: res })
-            }
-
-
-        } catch (e) {
-            console.error(e)
-            response.render('error', { error: e });
-        }
-    }
-
     async logoutUser(request, response) {
         console.log('In logoutUser Cookies: ', request.cookies);
         response.clearCookie('email');
@@ -294,7 +269,6 @@ class UserController {
         //     response.render('error', { error: e });
         // }
     }
-
 }
 
 module.exports = UserController

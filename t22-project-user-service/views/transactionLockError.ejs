@@ -21,13 +21,16 @@
 <%- include("headerLoggedIn");-%>
 
 <div>
-    <div class="alert-danger" align="center">Hello <%= msg %>, you have insufficient balance in your wallet to process the order.
-    <p>Please refill your wallet</p></div>
+    <div class="alert-danger" align="center">
+        <p>Hello <%= msg %>,</p>
+        <p>The following error encountered:</p>
+        <p><%= error %></p>
+    </div>
 </div>
 
 <div align="center">
     <br>
-    <h1>You can view your orders in Order History</h1>
+    <h3>Please wait until you previous order is processed</h3>
     <br>
     <br>
     <h5>Happy Shopping!</h5>

@@ -11,7 +11,6 @@ class Service {
     }
 
     async getAllItems() {
-        // let getInventoryUrl = "http://itemservice-env.eba-2h8vgeyy.us-east-1.elasticbeanstalk.com/api/items"
         let getInventoryUrl = process.env.inventorySvcUrl
         getInventoryUrl = getInventoryUrl + '/api/items/'
 
@@ -23,10 +22,33 @@ class Service {
                     }
                 })
                     .then(response => {
-                        console.log(response.data);
-                        resolve(response.data)
+                        console.log("This is in getAllItems: ");
+                        // console.log(response.data)
+                        // Check if the incoming data is JSON
+                        var responseData = response.data
+                        var isJSON
+                        responseData = typeof responseData !== "string" ? JSON.stringify(responseData) : responseData;
+                        try {
+                            responseData = JSON.parse(responseData);
+                        } catch (e) {
+                            isJSON = false;
+                        }
+                        if (typeof responseData === "object" && responseData !== null) {
+                            isJSON = true;
+                        }
+                        console.log(isJSON)
+                        if(isJSON)
+                            resolve(response.data)
+                        else
+                        {
+                            let err_response = {
+                                error: "Your previous order is not Accepted or Rejected"
+                            };
+                            reject(err_response)
+                        }
                     })
                     .catch(error => {
+                        console.log("This is in getAllItems error: ");
                         console.log(error);
                         let err_response = {
                             error: error
@@ -83,8 +105,30 @@ class Service {
                     }
                 })
                     .then(response => {
-                        console.log(response.data);
-                        resolve(response.data)
+                        // console.log(response.data);
+                        // Check if the incoming data is JSON
+                        var responseData = response.data
+                        var isJSON
+                        responseData = typeof responseData !== "string" ? JSON.stringify(responseData) : responseData;
+                        try {
+                            responseData = JSON.parse(responseData);
+                        } catch (e) {
+                            isJSON = false;
+                        }
+                        if (typeof responseData === "object" && responseData !== null) {
+                            isJSON = true;
+                        }
+                        console.log(isJSON)
+                        if(isJSON)
+                            resolve(response.data)
+                        else
+                        {
+                            let err_response = {
+                                error: "As your previous order is under process," +
+                                    "\nwe can not show you the updated balance."
+                            };
+                            reject(err_response)
+                        }
                     })
                     .catch(error => {
                         console.log(error);
@@ -102,7 +146,6 @@ class Service {
     }
 
     async buy(data)     {
-        // let orderURL =  `https://cloud-order-svc-bcyssspw3a-ue.a.run.app/add`;
         let orderSvcUrl = process.env.orderSvcUrl
         orderSvcUrl = orderSvcUrl + `/add`
         return new Promise(function (resolve, reject) {
@@ -117,11 +160,19 @@ class Service {
                         resolve(response.data)
                     })
                     .catch(error => {
-                        console.log("This is in buy: " + error.response.status);
-                        let err_response = {
-                            error: error
-                        };
-                        reject(error.response.status)
+                        if (error.response) {
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+                            let err_response = {
+                                error: error.response.data
+                            };
+                            reject(err_response)
+                        } else {
+                            let err_response = {
+                                error: error
+                            };
+                            reject(err_response)
+                        }
                     });
             }
             catch (e) {
@@ -132,7 +183,6 @@ class Service {
     }
 
     async getOrderHistory(userId) {
-        // let orderURL =  `https://cloud-order-svc-bcyssspw3a-ue.a.run.app/getOrders?user_id=${userId}`;
         let orderSvcUrl = process.env.orderSvcUrl
         orderSvcUrl = orderSvcUrl + `/getOrders?user_id=${userId}`
         return new Promise(function (resolve, reject) {
@@ -160,5 +210,6 @@ class Service {
             }
         })
     }
+
 }
 module.exports = Service

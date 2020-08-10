@@ -10,18 +10,6 @@ const routes = (app) => {
             response.render('home')
         })
 
-    app.route('/viewJobs')
-        .get((request, response) => {
-            var controller = new Controller()
-            controller.getJobsList(request, response)
-        })
-
-    app.route('/add')
-        .post(async (request, response) => {
-            var controller = new Controller()
-            controller.add(request, response)
-        });
-
     app.route('/login')
         .get((request, response) => {
             response.render('login')
@@ -80,41 +68,5 @@ const routes = (app) => {
             var controller = new Controller();
             controller.getOrderHistory(request, response)
         });
-
-    app.route('/searchJob')
-        .get((request, response) => {
-            response.render('getJob')
-        })
-
-    app.route('/searchJob')
-        .post((request, response) => {
-            var controller = new Controller()
-            controller.searchJob(request, response)
-        })
-
-    app.route('/viewJob')
-        .post(async (request, response) => {
-            var controller = new Controller();
-            controller.viewJob(request, response)
-        });
-
-    app.route('/fulfillOrder')
-        .post(async (request, response) => {
-            var controller = new Controller();
-            controller.fulfillOrder(request, response)
-        });
-
-    app.route('/jobSearchHistory')
-        .get(async (request, response) => {
-            var controller = new Controller();
-            controller.getJobSearchHistory(request, response)
-        });
-
-    app.route('/jobOrderHistory')
-        .get(async (request, response) => {
-            var controller = new Controller();
-            controller.getJobOrderHistory(request, response)
-        });
-
 }
 module.exports = routes
