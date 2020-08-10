@@ -119,7 +119,7 @@ class Service {
 
 
     async checkWalletBalanceForEligibility(userId, amount) {
-        let awsLambdaWalletCheckUrl = process.env.awsLambdaWalletCheckSvc || 'https://aehwm51v7c.execute-api.us-east-1.amazonaws.com/production/'
+        let awsLambdaWalletCheckUrl = process.env.awsLambdaWalletCheckSvc || 'https://aehwm51v7c.execute-api.us-east-1.amazonaws.com/production'
         awsLambdaWalletCheckUrl = awsLambdaWalletCheckUrl + '/api/wallet/checkWalletBalanceForOrder/'
 
         let body = {
