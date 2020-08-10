@@ -25,12 +25,18 @@ class Controller {
 
       //Step-2
       // Trigger inventory transaction API
-      // TODO
+      let inventoryTransactionRequest = {
+        itemId: request.body.itemID,
+        quantity: request.body.quantity,
+        transactionId: transactionId
+      }
+      let inventoryTransactionResponse = await transactionService.triggerInventoryTransaction(inventoryTransactionRequest);
+      console.log(`inventoryTransactionResponse:`, inventoryTransactionResponse)
 
 
       //Step-3
       // call create order service call
-      if (walletTransactionResponse != undefined) {
+      if (walletTransactionResponse != undefined && inventoryTransactionResponse != undefined) {
         let orderService = new Service()
         let orderServiceResponse = await orderService.add(request.body)
 
@@ -140,7 +146,12 @@ class Controller {
 
         // Step - 3
         // trigger commit API of inventory service
-        // TODO
+        let inventoryTransactionRequest = {
+          transactionId: transactionId
+        }
+        let inventoryCommitResponse = await transactionService.acceptInventoryTransaction(inventoryTransactionRequest)
+
+        console.log(`inventoryCommitResponse:`, inventoryCommitResponse)
 
 
         // Step - 4
@@ -201,7 +212,12 @@ class Controller {
 
         // Step - 3
         // trigger rollback API of inventory service
+        let inventoryTransactionRequest = {
+          transactionId: transactionId
+        }
+        let inventoryRollbackResponse = await transactionService.rejectInventoryTransaction(inventoryTransactionRequest)
 
+        console.log(`inventoryRollbackResponse:`, inventoryRollbackResponse)
 
         // Step - 4
         // change order status
