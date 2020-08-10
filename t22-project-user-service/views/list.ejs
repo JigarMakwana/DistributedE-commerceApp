@@ -33,8 +33,8 @@
           <th class="cart-product-name">Product</th>
           <th class="cart-product-price">Available Quantity</th>
           <th class="cart-product-price">Unit Price</th>
-          <th class="cart-product-quantity">Quantity</th>
-          <th class="cart-product-subtotal">Total</th>
+          <!-- <th class="cart-product-quantity">Quantity</th>
+          <th class="cart-product-subtotal">Total</th> -->
           <th></th>
         </tr>
       </thead>
@@ -56,7 +56,7 @@
             <span id="price" name="price" class="amount"><%= j.price %></span>
           </td>
 
-          <td class="cart-product-quantity">
+          <!-- <td class="cart-product-quantity">
             <div class="quantity clearfix">
               <input type="button" value="-" class="minus" field="quantity">
               <input type="number" id="quantity" name="quantity"  min="1" value="0" class="qty" />
@@ -71,9 +71,10 @@
             <form class="d-inline" action="/buy" method="POST">
               <input type="hidden" name="items" value="<%= JSON.stringify(items) %>">
               <input type="hidden" name="itemId" value="<%= j.itemId%>">
-                <input type="submit" class="btn btn-primary" value="Buy">
+              <input type="hidden" name="quantity" value="<%= j.quantity%>">
+              <input type="submit" class="btn btn-primary" value="Buy">
             </form>
-          </td>
+          </td> -->
         </tr>
         <% }) %>
       </tbody>

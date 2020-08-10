@@ -38,8 +38,15 @@ const routes = (app) => {
             controller.getItemsList(request, response)
         })
 
+    app.route('/list')
+        .get((request, response) => {
+            var controller = new Controller()
+            controller.getAllItemsList(request, response)
+        })
+
     app.route('/buy')
         .post((request, response) => {
+            console.log("inside buy");
             var controller = new Controller()
             controller.buy(request, response)
         })

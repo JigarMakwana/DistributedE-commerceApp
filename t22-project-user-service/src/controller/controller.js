@@ -19,11 +19,22 @@ class Controller {
 
     // Get all item
     async getItemsList(request, response) {
-
         try {
             let itemService = new Service()
             let responseObj = await itemService.getAllItems()
-            console.log(`responseObj from service:`, responseObj)
+            //   const uniqueJob = [...new Map(responseObj.map(item => [item['jobName'], item])).values()]
+            //   console.log(`unique job:`, uniqueJob)
+            response.render('placeOrder', { items: responseObj });
+        } catch (e) {
+            console.error(e)
+            response.render('error', { error: e.error });
+        }
+    }
+
+    async getAllItemsList(request, response) {
+        try {
+            let itemService = new Service()
+            let responseObj = await itemService.getAllItems()
 
             //   const uniqueJob = [...new Map(responseObj.map(item => [item['jobName'], item])).values()]
             //   console.log(`unique job:`, uniqueJob)
@@ -46,7 +57,6 @@ class Controller {
             let userId = await userService.getUserByEmail(email)
             let itemService = new Service()
             let responseObj = await itemService.getWalletBalance(userId)
-            console.log(`responseObj from service:`, responseObj)
             response.render('myWallet', { amount: responseObj });
 
         } catch (e) {
@@ -60,22 +70,19 @@ class Controller {
         try {
             console.log('In myWallet route Cookies: ', request.cookies.email)
             let userId = request.cookies.userId;
-            console.log("This i body " + JSON.stringify(request.body))
-
-            console.log("In Buy " + userId)
-            console.log(request.body.total)
-            console.log(request.body.itemId)
-            console.log(request.body.quantity)
-            console.log(request.body.itemName)
-
+            let service = new Service();
+            var itemId = request.body.item;
+            var quantity = request.body.quantity;
+            let res = await service.getItemDetailsByID(itemId);
             let data = {
-                userID : userId,
-                amount : request.body.total,
-                items:[{itemID : request.body.itemId, qty : request.body.quantity, name: request.body.item}]
+                userID: userId,
+                amount: res[0].price * quantity,
+                items: [{ itemID: itemId, qty: quantity, name: res[0].itemName }]
             }
-            // let itemService = new Service()
-            // let responseObj = await itemService.buy(data)
-            // console.log(`responseObj from service:`, responseObj)
+            console.log(data);
+            let itemService = new Service()
+            let responseObj = await itemService.buy(data)
+            console.log(`responseObj from service:`, responseObj)
             response.render('placeOrderSuccess', { success: email });
         } catch (e) {
             console.error(e)
@@ -105,7 +112,6 @@ class Controller {
         try {
             let jobService = new Service()
             let responseObj = await jobService.getJobsList()
-            console.log(`responseObj from service:`, responseObj)
 
             //   const uniqueJob = [...new Map(responseObj.map(item => [item['jobName'], item])).values()]
             //   console.log(`unique job:`, uniqueJob)
@@ -139,7 +145,6 @@ class Controller {
             let jobSearchRecord = service.saveJobSearchRecord(request.body.jobName)
             console.log(jobSearchRecord)
 
-            console.log(`responseObj from service:`, responseObj)
             response.render('list', { jobs: responseObj });
 
 
@@ -259,7 +264,6 @@ class Controller {
         try {
             let jobService = new Service()
             let responseObj = await jobService.getJobSearchHistoryList()
-            console.log(`responseObj from service:`, responseObj)
             response.render('jobSearchHistory', { jobs: responseObj });
 
         } catch (e) {
@@ -273,7 +277,6 @@ class Controller {
         try {
             let jobService = new Service()
             let responseObj = await jobService.getJobOrdersList()
-            console.log(`responseObj from service:`, responseObj)
             response.render('jobOrders', { jobs: responseObj });
 
         } catch (e) {
