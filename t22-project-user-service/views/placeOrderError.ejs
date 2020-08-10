@@ -21,13 +21,17 @@
 <%- include("headerLoggedIn");-%>
 
 <div>
-    <div class="alert-danger" align="center">Hello <%= msg %>,
-        <p>Can not place a new order. Your previous order is not yet approved or rejected.</p></div>
+    <div class="alert-danger" align="center">
+        <p>Hello <%= msg %>,</p>
+        <p>Can not place a new order. The following error encountered:</p>
+        <p><%= error %></p>
+    </div>
 </div>
 
 <div align="center">
     <br>
-    <h1>You can view your orders in Order History</h1>
+    <h3>You can view your orders in Order History</h3>
+    <h3>You can view your balance in My Wallet</h3>
     <br>
     <br>
     <h5>Happy Shopping!</h5>
