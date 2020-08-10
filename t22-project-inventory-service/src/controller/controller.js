@@ -199,13 +199,9 @@ class Controller {
                 response.send(resp);
             }
             else{
-                response.send({
-                    messsage: `Transaction cannot be prepared due to insufficient item quantity`,
-                    transactionId: transactionId,
-                    success: false
-                });
-                
+                response.status(409).send({error: 'Transaction cannot be prepared due to insufficient item quantity.'});
             }
+           
             
             
         } catch (e) {

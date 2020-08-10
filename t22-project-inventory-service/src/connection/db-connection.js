@@ -7,7 +7,7 @@ var mysqlConnection = mysql.createConnection({
     host: process.env.host || 'localhost',
     user: process.env.user || 'root',
     password: process.env.password || 'password',
-    database: process.env.database || 'InventoryDb',
+    database: process.env.database || 'InventoryDb3',
     multipleStatements: true
 });
 
