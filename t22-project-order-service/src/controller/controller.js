@@ -25,9 +25,13 @@ class Controller {
 
       //Step-2
       // Trigger inventory transaction API
+
+      let inventoryItems = request.body.items[0];
+
       let inventoryTransactionRequest = {
-        itemId: request.body.itemID,
-        quantity: request.body.qty,
+
+        itemId: inventoryItems.itemID,
+        quantity: inventoryItems.qty,
         transactionId: transactionId
       }
       let inventoryTransactionResponse = await transactionService.triggerInventoryTransaction(inventoryTransactionRequest);
@@ -63,15 +67,18 @@ class Controller {
     } catch (e) {
       console.error(e)
 
-      response.status(500).send(e)
+  //    response.status(500).send(e)
 
-
-      // if (e.error.error === "Error in starting the transaction") {
-      //   response.status(409).send({ error: "Error in creating the order. Please approve or reject the previous order." })
-      // } else {
-      //   response.status(500).send(e)
-      // }
-
+      if (e != undefined && e.error != undefined && e.error.error != undefined) {
+        if (e.error.error === "Error in starting the transaction") {
+          response.status(409).send({ error: "Error in creating the order. Please approve or reject the previous order." })
+        } else {
+          response.status(500).send(e)
+        }
+      }
+      else{
+        response.status(500).send(e)
+      }
 
     }
   }
