@@ -236,10 +236,12 @@ class LoginService {
     }
 
     async createWallet(walletObj) {
-        let createWalletURL =  "http://wallet-svc.us-east-1.elasticbeanstalk.com/wallet/add";
+        // let createWalletURL =  "http://wallet-svc.us-east-1.elasticbeanstalk.com/wallet/add";
+        let walletSvcUrl = process.env.walletSvcUrl
+        walletSvcUrl = walletSvcUrl + `/add`
         return new Promise(function (resolve, reject) {
             try {
-                axios.post(createWalletURL, walletObj, {
+                axios.post(walletSvcUrl, walletObj, {
                     headers: {
                         Accept: 'application/json'
                     }
