@@ -6,9 +6,13 @@ const TransactionService = require('../service/transactionService.js')
 class Controller {
 
   async add(request, response) {
+
+
+    let transactionId = Math.random().toString(36).slice(2)
+
     try {
 
-      let transactionId = Math.random().toString(36).slice(2)
+
 
       // Step -1
       // Trigger wallet transaction API
@@ -67,7 +71,21 @@ class Controller {
     } catch (e) {
       console.error(e)
 
-  //    response.status(500).send(e)
+      //    response.status(500).send(e)
+
+      let walletTransactionRequest = {
+        globalTransactionId: transactionId,
+      }
+
+      let inventoryTransactionRequest = {
+        transactionId: transactionId
+      }
+
+      let transactionService = new TransactionService();
+
+      let walletRollback = transactionService.rejectWalletTransaction(walletTransactionRequest);
+      let inventoryRollback = transactionService.rejectInventoryTransaction(inventoryTransactionRequest);
+
 
       if (e != undefined && e.error != undefined && e.error.error != undefined) {
         if (e.error.error === "Error in starting the transaction") {
@@ -76,7 +94,7 @@ class Controller {
           response.status(500).send(e)
         }
       }
-      else{
+      else {
         response.status(500).send(e)
       }
 
